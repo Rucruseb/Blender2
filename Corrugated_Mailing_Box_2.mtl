@@ -1,37 +1,32 @@
-# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 07.08.2019 00:10:37
-
 newmtl Closed_Box_Texture
 	Ns 100.0000
 	Ni 1.6000
 	d 1.0000
 	Tr 0.0000
-	Tf 1.0000 1.0000 1.0000 
+	Tf 1.0000 1.0000 1.0000
 	illum 2
 	Ka 0.5880 0.5880 0.5880
 	Kd 0.5000 0.5000 0.5000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka textures/Corrugated_Mailing_Box_Closed_AO.png  # Mapa AO (Ambient Occlusion)
-	map_Kd textures/Corrugated_Mailing_Box_Closed_BaseColor.png  # BaseColor (Difusión)
-	map_Ks textures/Corrugated_Mailing_Box_Closed_Diffuse.png  # Mapa Diffuse si es necesario
-	map_bump textures/Corrugated_Mailing_Box_Closed_Normal.png  # Mapa de normales
-	bump textures/Corrugated_Mailing_Box_Closed_Normal.png  # También puede usarse bump
+	map_Ka Corrugated_Mailing_Box_Closed_AO.png
+	map_Kd Corrugated_Mailing_Box_Closed_BaseColor.png
+	map_bump Corrugated_Mailing_Box_Closed_Normal.png
+	bump Corrugated_Mailing_Box_Closed_Normal.png
 
 newmtl Open_Box_Texture
 	Ns 100.0000
 	Ni 1.6000
 	d 1.0000
 	Tr 0.0000
-	Tf 1.0000 1.0000 1.0000 
+	Tf 1.0000 1.0000 1.0000
 	illum 2
 	Ka 0.5880 0.5880 0.5880
 	Kd 0.5000 0.5000 0.5000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka textures/Corrugated_Mailing_Box_Open_AO.png  # Mapa AO (ambient occlusion)
-	map_Kd textures/Corrugated_Mailing_Box_Open_BaseColor.png  # BaseColor (difusión)
-	map_Ks textures/Corrugated_Mailing_Box_Open_Diffuse.png  # Mapa Diffuse si es necesario
-	map_bump textures/Corrugated_Mailing_Box_Open_Normal.png  # Mapa de normales
-	bump textures/Corrugated_Mailing_Box_Open_Normal.png  # También puede usarse bump
+	map_Ka Corrugated_Mailing_Box_Open_AO.png
+	map_Kd Corrugated_Mailing_Box_Open_BaseColor.png
+	map_bump Corrugated_Mailing_Box_Open_Normal.png
+	bump Corrugated_Mailing_Box_Open_Normal.png
 
