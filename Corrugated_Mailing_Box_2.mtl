@@ -9,10 +9,9 @@ newmtl Closed_Box_Texture
 	Kd 0.5000 0.5000 0.5000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Corrugated_Mailing_Box_Closed_AO.png
-	map_Kd Corrugated_Mailing_Box_Closed_BaseColor.png
-	map_bump Corrugated_Mailing_Box_Closed_Normal.png
-	bump Corrugated_Mailing_Box_Closed_Normal.png
+	map_Ka textures/Corrugated_Mailing_Box_Closed_AO.png
+	map_Kd textures/Corrugated_Mailing_Box_Closed_BaseColor.png
+	map_bump textures/Corrugated_Mailing_Box_Closed_Normal.png
 
 newmtl Open_Box_Texture
 	Ns 100.0000
@@ -25,8 +24,6 @@ newmtl Open_Box_Texture
 	Kd 0.5000 0.5000 0.5000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Corrugated_Mailing_Box_Open_AO.png
-	map_Kd Corrugated_Mailing_Box_Open_BaseColor.png
-	map_bump Corrugated_Mailing_Box_Open_Normal.png
-	bump Corrugated_Mailing_Box_Open_Normal.png
-
+	map_Ka textures/Corrugated_Mailing_Box_Open_AO.png
+	map_Kd textures/Corrugated_Mailing_Box_Open_BaseColor.png
+	map_bump textures/Corrugated_Mailing_Box_Open_Normal.png
