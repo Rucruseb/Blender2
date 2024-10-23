@@ -1,4 +1,3 @@
-el codigo final resulta de la siguiente manera
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,8 +34,6 @@ el codigo final resulta de la siguiente manera
           background-color: #ffffff;
         }
 
-
-        
         .description-section {
             flex: 1;
             padding: 20px;
@@ -189,13 +186,13 @@ el codigo final resulta de la siguiente manera
 
     // Cargar el archivo MTL y OBJ
     var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('eyeball.mtl', function (materials) {
+    mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
       materials.preload();
 
       // Cargar el archivo OBJ
       var objLoader = new THREE.OBJLoader();
       objLoader.setMaterials(materials);
-      objLoader.load('eyeball.obj', function (object) {
+      objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
         object.position.set(0, 0, 0);  // Centrar el modelo
         object.scale.set(5, 5, 5);  // Ajustar la escala del modelo
         scene.add(object);
