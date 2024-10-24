@@ -12,7 +12,7 @@ newmtl Closed_Box_Texture
 	map_Kd Corrugated_Mailing_Box_Closed_BaseColor.png  
 	map_Ka Corrugated_Mailing_Box_Closed_Normal.png
 	map_bump Corrugated_Mailing_Box_Closed_Roughness.png   
-	map_Ke Corrugated_Mailing_Box_Closed_AO.png
+
 newmtl Open_Box_Texture
 	Ns 100.0000
 	Ni 1.6000
@@ -27,4 +27,4 @@ newmtl Open_Box_Texture
 	map_Kd Corrugated_Mailing_Box_Open_BaseColor.png         
 	map_Ka Corrugated_Mailing_Box_Open_Normal.png
 	map_bump Corrugated_Mailing_Box_Open_Roughness.png   
-	map_Ke Corrugated_Mailing_Box_Open_AO.png
+
