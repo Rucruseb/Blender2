@@ -195,7 +195,17 @@
       objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
         object.position.set(0, 0, 0);  // Centrar el modelo
         object.scale.set(0.25, 0.25, 0.25);  // Ajustar la escala del modelo
-        scene.add(object);
+
+
+      // Ajustar la rotación del objeto (ángulo)
+      object.rotation.x = Math.PI / 4;  // Rotar 45 grados en el eje X
+      object.rotation.y = Math.PI / 4;  // Rotar 45 grados en el eje Y
+      object.rotation.z = 0;  // Mantener el eje Z sin rotación (puedes cambiarlo si lo deseas)
+    
+      scene.add(object);  // Añadir el objeto a la escena
+
+
+          
       });
 
      // Ajustar la cámara
