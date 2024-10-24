@@ -24,6 +24,6 @@ newmtl Open_Box_Texture
 	Kd 0.5000 0.5000 0.5000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Corrugated_Mailing_Box_Open_AO.png
-	map_Kd Corrugated_Mailing_Box_Open_BaseColor.png
-	map_bump Corrugated_Mailing_Box_Open_Normal.png
+	map_Ka Corrugated_Mailing_Box_Open_Glossiness.png
+	map_Kd Corrugated_Mailing_Box_Open_Diffuse.png
+	map_bump Corrugated_Mailing_Box_Open_BaseColor.png
