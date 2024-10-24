@@ -211,6 +211,7 @@
         object.position.set(0, 0, 0);  // Centrar el modelo
         object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
 
+        scene.add(object);  // Añadir el objeto a la escena
 
         // Función para actualizar la textura del objeto
         document.getElementById('image-input').addEventListener('change', function (event) {
@@ -219,42 +220,25 @@
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     var textureLoader = new THREE.TextureLoader();
-                    var texture = textureLoader.load(e.target.result);
-
-                    // Aplicar la textura al material del objeto
-                    object.traverse(function (child) {
-                        if (child instanceof THREE.Mesh) {
-                            child.material.map = texture;  // Asignar la textura difusa (color)
-                            child.material.needsUpdate = true;  // Asegurar que el material se actualice
-                        }
+                    textureLoader.load(e.target.result, function (texture) {
+                        // Aplicar la textura al material del objeto
+                        object.traverse(function (child) {
+                            if (child instanceof THREE.Mesh) {
+                                child.material.map = texture;  // Asignar la textura difusa (color)
+                                child.material.needsUpdate = true;  // Asegurar que el material se actualice
+                            }
+                        });
                     });
                 };
                 reader.readAsDataURL(file);  // Leer el archivo como una URL
             }
         });
+      });
     });
 
-
-
-
-          
-
-      // Ajustar la rotación del objeto (ángulo)
-      object.rotation.x = 0;  // Rotar 45 grados en el eje X
-      object.rotation.y = 0;  // Rotar 45 grados en el eje Y
-      object.rotation.z = 0;  // Mantener el eje Z sin rotación (puedes cambiarlo si lo deseas)
-    
-      scene.add(object);  // Añadir el objeto a la escena
-
-
-          
-      });
-
-     // Ajustar la cámara
-     camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
-     camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
-    
-     });
+    // Ajustar la cámara
+    camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
+    camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
 
     // Función de animación
     function animate() {
@@ -267,3 +251,4 @@
 
 </body>
 </html>
+
