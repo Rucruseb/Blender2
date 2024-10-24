@@ -13,7 +13,7 @@ newmtl Closed_Box_Texture
 	map_Kd Corrugated_Mailing_Box_Closed_Diffuse.png  
 	map_Ka Corrugated_Mailing_Box_Closed_AO.png
 	map_Ks Corrugated_Mailing_Box_Closed_Specular.png  
-	map_bump Corrugated_Mailing_Box_Closed_Normal.png   
+	 
 	map_Ke Corrugated_Mailing_Box_Closed_Glossiness.png
 
 
@@ -32,7 +32,7 @@ newmtl Open_Box_Texture
 	map_Kd Corrugated_Mailing_Box_Open_BaseColor.png         
 	map_Kd Corrugated_Mailing_Box_Open_Diffuse.png 
 	map_Ka Corrugated_Mailing_Box_Open_AO.png
-	map_bump Corrugated_Mailing_Box_Open_Normal.png   
+	 
 	map_Ks Corrugated_Mailing_Box_Open_Specular.png   
 	map_Ke Corrugated_Mailing_Box_Open_Glossiness.png
 
