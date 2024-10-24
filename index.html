@@ -194,10 +194,15 @@
       objLoader.setMaterials(materials);
       objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
         object.position.set(0, 0, 0);  // Centrar el modelo
-        object.scale.set(5, 5, 5);  // Ajustar la escala del modelo
+        object.scale.set(2, 2, 2);  // Ajustar la escala del modelo
         scene.add(object);
       });
-    });
+
+     // Ajustar la cámara
+     camera.position.set(0, 0, 10);  // Colocar la cámara frente al objeto
+     camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
+    
+     });
 
     // Función de animación
     function animate() {
