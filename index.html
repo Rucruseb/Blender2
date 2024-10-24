@@ -187,13 +187,13 @@
     renderer.setSize(container.clientWidth, container.clientHeight);  // Ajustar al tamaño del contenedor
     document.getElementById('product-viewer').appendChild(renderer.domElement); // Insertar en el div del visor
 
-    // Añadir luces
-    var ambientLight = new THREE.AmbientLight(0x404040);
-    scene.add(ambientLight);
+// Añadir más luces y ajustar su intensidad
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz ambiental más fuerte
+scene.add(ambientLight);
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(1, 1, 1).normalize();
-    scene.add(directionalLight);
+var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Luz direccional más intensa
+directionalLight.position.set(5, 10, 5).normalize();
+scene.add(directionalLight);
 
     // Activar OrbitControls
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
