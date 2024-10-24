@@ -34,6 +34,11 @@
           background-color: #fff;
         }
 
+        #image-uploader {
+          text-align: center;
+          margin-top: 20px;
+        }
+
         .description-section {
             flex: 1;
             padding: 20px;
@@ -125,6 +130,13 @@
         </div>
         <div class="add-to-cart">Añadir al Carrito</div>
 
+
+        <!-- Input para subir la imagen -->
+        <div id="image-uploader">
+            <label for="image-input">Selecciona una imagen para aplicar como textura:</label>
+            <input type="file" id="image-input" accept="image/*">
+        </div>
+
         <div class="product-description">
             <h2>Descripción del Producto</h2>
             <p>Este es un gran producto que te encantará. Viene en varios colores y tamaños, y es perfecto para cualquier ocasión. Fabricado con materiales de alta calidad para garantizar su durabilidad.</p>
@@ -199,6 +211,33 @@
         object.position.set(0, 0, 0);  // Centrar el modelo
         object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
 
+
+        // Función para actualizar la textura del objeto
+        document.getElementById('image-input').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var textureLoader = new THREE.TextureLoader();
+                    var texture = textureLoader.load(e.target.result);
+
+                    // Aplicar la textura al material del objeto
+                    object.traverse(function (child) {
+                        if (child instanceof THREE.Mesh) {
+                            child.material.map = texture;  // Asignar la textura difusa (color)
+                            child.material.needsUpdate = true;  // Asegurar que el material se actualice
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);  // Leer el archivo como una URL
+            }
+        });
+    });
+
+
+
+
+          
 
       // Ajustar la rotación del objeto (ángulo)
       object.rotation.x = 0;  // Rotar 45 grados en el eje X
