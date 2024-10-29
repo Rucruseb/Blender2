@@ -211,19 +211,23 @@
             // Añadir el objeto a la escena
             scene.add(object);
 
-            // Función para aplicar imagen personalizada a una cara específica
+            // Identificar y aplicar texturas solo a caras específicas
+            var textureLoader = new THREE.TextureLoader();
             document.getElementById('image-input').addEventListener('change', function (event) {
                 var file = event.target.files[0];
                 if (file) {
                     var reader = new FileReader();
                     reader.onload = function (e) {
-                        var textureLoader = new THREE.TextureLoader();
                         var texture = textureLoader.load(e.target.result);
-                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping; // Ajuste de repetición
+                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
                         object.traverse((child) => {
-                            if (child.isMesh && child.name === "Closed_Box") {
-                                child.material.map = texture;
+                            if (child.isMesh) {
+                                // Asignar la textura solo a las caras seleccionadas
+                                child.material = [
+                                    new THREE.MeshStandardMaterial({ map: texture }), // Asigna a cara específica
+                                    new THREE.MeshStandardMaterial({ color: 0xdddddd }) // Asigna a otras caras
+                                ];
                                 child.material.needsUpdate = true;
                             }
                         });
@@ -231,9 +235,9 @@
                     reader.readAsDataURL(file);
                 }
             });
+            scene.add(object);
         });
     });
-
     // Función de animación
     function animate() {
         requestAnimationFrame(animate);
