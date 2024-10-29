@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Producto 3D</title>
     <style>
-        /* Estilos generales y de secciones */
+        /* Estilos de contenedor */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -14,93 +14,87 @@
         }
         .container {
             display: flex;
+            flex-direction: column;
             width: 90%;
             max-width: 1200px;
             margin: 20px auto;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .image-section, .editor-section, .viewer-section {
-            flex: 1;
+        .section {
             padding: 20px;
-            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
         }
-        #product-viewer, #image-preview {
+        #image-preview {
             width: 100%;
-            height: 500px;
+            height: 300px;
             background-color: #eee;
             margin-bottom: 10px;
         }
-        .editor-controls input {
-            display: block;
-            margin: 5px 0;
+        .editor-controls input, .editor-controls label {
+            display: inline-block;
+            margin: 5px;
+        }
+        #log {
+            font-size: 0.9em;
+            color: #333;
+            max-height: 150px;
+            overflow-y: scroll;
+            background-color: #f9f9f9;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Sección de Previsualización 2D -->
-    <div class="image-section">
-        <h3>Vista previa de la Imagen</h3>
+    <!-- Sección de edición y vista previa de imagen -->
+    <div class="section">
+        <h3>Vista previa y edición de Imagen</h3>
         <canvas id="image-preview"></canvas>
-    </div>
-
-    <!-- Sección de Edición de Imagen -->
-    <div class="editor-section">
-        <h3>Edición de Imagen</h3>
         <input type="file" id="image-input" accept="image/*">
         <div class="editor-controls">
-            <label>Redimensionar:</label>
-            <input type="range" id="resize-slider" min="1" max="200" value="100">
+            <label>Escala:</label>
+            <input type="range" id="scale-slider" min="1" max="300" value="100">
             <label>Rotación:</label>
             <input type="range" id="rotate-slider" min="0" max="360" value="0">
-            <label>Mover Horizontal:</label>
-            <input type="range" id="move-x-slider" min="-100" max="100" value="0">
-            <label>Mover Vertical:</label>
-            <input type="range" id="move-y-slider" min="-100" max="100" value="0">
+            <label>Mover X:</label>
+            <input type="range" id="move-x-slider" min="-200" max="200" value="0">
+            <label>Mover Y:</label>
+            <input type="range" id="move-y-slider" min="-200" max="200" value="0">
         </div>
     </div>
 
-    <!-- Visor 3D del producto -->
-    <div class="viewer-section">
+    <!-- Registro de ajustes -->
+    <div class="section">
+        <h3>Registro de Ajustes</h3>
+        <div id="log"></div>
+    </div>
+
+    <!-- Visor del producto 3D -->
+    <div class="section">
         <h3>Vista del Producto 3D</h3>
         <div id="product-viewer"></div>
     </div>
 </div>
 
-<!-- Librerías de Three.js y Controladores -->
+<!-- Three.js y Controladores -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
 
 <script>
-    // Configuración de la escena 3D
+    // Configuración 3D
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 5, 20);
     var renderer = new THREE.WebGLRenderer();
-    var container = document.getElementById('product-viewer');
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
+    renderer.setSize(500, 500);
+    document.getElementById('product-viewer').appendChild(renderer.domElement);
 
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 10, 5).normalize();
-    scene.add(directionalLight);
-
-    // Variables para edición 2D
-    var imageCanvas = document.getElementById('image-preview');
-    var ctx = imageCanvas.getContext('2d');
-    var img = new Image();
-    var imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
-
-    var object; // Declarar el objeto globalmente para su uso en otras funciones
-
-    // Cargar el archivo OBJ/MTL
+    // Cargar objeto
+    var object;
     var mtlLoader = new THREE.MTLLoader();
     mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
         materials.preload();
@@ -113,7 +107,20 @@
         });
     });
 
-    // Subir y configurar la imagen
+    // Configuración de edición de imagen
+    var imageCanvas = document.getElementById('image-preview');
+    var ctx = imageCanvas.getContext('2d');
+    var img = new Image();
+    var imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
+
+    function logAdjustment(action) {
+        const logDiv = document.getElementById('log');
+        const logEntry = document.createElement('p');
+        logEntry.textContent = action;
+        logDiv.appendChild(logEntry);
+    }
+
+    // Configuración de sliders y eventos
     document.getElementById('image-input').addEventListener('change', function (event) {
         var file = event.target.files[0];
         if (file) {
@@ -129,33 +136,36 @@
         }
     });
 
-    // Controles de edición de la imagen
-    document.getElementById('resize-slider').addEventListener('input', function (e) {
+    document.getElementById('scale-slider').addEventListener('input', function (e) {
         imgScale = e.target.value / 100;
         drawImage();
         applyTextureTo3DModel();
+        logAdjustment(`Escala ajustada a ${imgScale}`);
     });
     document.getElementById('rotate-slider').addEventListener('input', function (e) {
         imgRotation = e.target.value * Math.PI / 180;
         drawImage();
         applyTextureTo3DModel();
+        logAdjustment(`Rotación ajustada a ${e.target.value} grados`);
     });
     document.getElementById('move-x-slider').addEventListener('input', function (e) {
         imgOffsetX = e.target.value;
         drawImage();
         applyTextureTo3DModel();
+        logAdjustment(`Desplazamiento en X ajustado a ${imgOffsetX}`);
     });
     document.getElementById('move-y-slider').addEventListener('input', function (e) {
         imgOffsetY = e.target.value;
         drawImage();
         applyTextureTo3DModel();
+        logAdjustment(`Desplazamiento en Y ajustado a ${imgOffsetY}`);
     });
 
-    // Dibujo y aplicación de textura en tiempo real
+    // Dibujo de la imagen editada en el canvas
     function drawImage() {
         ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
         ctx.save();
-        ctx.translate(imageCanvas.width / 2 + imgOffsetX, imageCanvas.height / 2 + imgOffsetY);
+        ctx.translate(imageCanvas.width / 2 + parseFloat(imgOffsetX), imageCanvas.height / 2 + parseFloat(imgOffsetY));
         ctx.rotate(imgRotation);
         ctx.scale(imgScale, imgScale);
         ctx.drawImage(img, -img.width / 2, -img.height / 2);
@@ -178,11 +188,11 @@
     // Animación
     function animate() {
         requestAnimationFrame(animate);
-        controls.update();
         renderer.render(scene, camera);
     }
     animate();
 </script>
 </body>
 </html>
+
 
