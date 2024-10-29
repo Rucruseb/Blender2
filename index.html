@@ -29,8 +29,8 @@
         }
 
         #product-viewer {
-          width: 500px;  /* Ancho pequeño */
-          height: 500px; /* Alto pequeño */
+          width: 500px;  
+          height: 500px;
           background-color: #fff;
         }
 
@@ -130,7 +130,6 @@
         </div>
         <div class="add-to-cart">Añadir al Carrito</div>
 
-
         <!-- Input para subir la imagen -->
         <div id="image-uploader">
             <label for="image-input">Selecciona una imagen para aplicar como textura:</label>
@@ -172,76 +171,79 @@
 <script>
     // Crear la escena 3D
     var scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf7f7f7);  // Cambiar el fondo de la escena a blanco
-
+    scene.background = new THREE.Color(0xf7f7f7);
 
     // Crear la cámara
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 20);  // Ajustar la posición de la cámara
-    camera.lookAt(scene.position);  // Asegurar que la cámara mire al objeto
+    camera.position.set(0, 5, 20);
+    camera.lookAt(scene.position);
 
     // Crear el renderizador
     var renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0xf7f7f7);  // Cambiar el fondo del renderizador a blanco
+    renderer.setClearColor(0xf7f7f7);
     var container = document.getElementById('product-viewer');
-    renderer.setSize(container.clientWidth, container.clientHeight);  // Ajustar al tamaño del contenedor
-    document.getElementById('product-viewer').appendChild(renderer.domElement); // Insertar en el div del visor
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
 
-// Añadir más luces y ajustar su intensidad
-var ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz ambiental más fuerte
-scene.add(ambientLight);
+    // Añadir luces
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
 
-var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Luz direccional más intensa
-directionalLight.position.set(5, 10, 5).normalize();
-scene.add(directionalLight);
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    directionalLight.position.set(5, 10, 5).normalize();
+    scene.add(directionalLight);
 
     // Activar OrbitControls
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.update();
 
-// Cargar el archivo MTL y OBJ
-var mtlLoader = new THREE.MTLLoader();
-mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
-  materials.preload();
+    // Cargar el archivo MTL y OBJ
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
+        materials.preload();
 
-// Modificar la función de carga del modelo
-objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
-    object.position.set(0, 0, 0);  // Centrar el modelo
-    object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
+            object.position.set(0, 0, 0);
+            object.scale.set(0.3, 0.3, 0.3);
 
-    // Identificación de caras y aplicación de color o textura
-    object.traverse((child) => {
-        if (child.isMesh) {
-            const geometry = child.geometry;
-            
-            if (geometry.isBufferGeometry) {
-                // Accede a las posiciones y mapeo UV de BufferGeometry
-                const uvAttribute = geometry.getAttribute('uv');  // Obtén coordenadas UV
+            // Añadir el objeto a la escena
+            scene.add(object);
 
-                // Agrega lógica para asignar una textura o color específico a partes seleccionadas
-                // Por ejemplo, asignar una textura solo a una parte de la caja
-                child.material.map = new THREE.TextureLoader().load('path/to/texture.png');
-                child.material.needsUpdate = true;
-            }
-        }
+            // Función para aplicar imagen personalizada a una cara específica
+            document.getElementById('image-input').addEventListener('change', function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var textureLoader = new THREE.TextureLoader();
+                        var texture = textureLoader.load(e.target.result);
+                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping; // Ajuste de repetición
+
+                        object.traverse((child) => {
+                            if (child.isMesh && child.name === "Closed_Box") {
+                                child.material.map = texture;
+                                child.material.needsUpdate = true;
+                            }
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
     });
-
-    scene.add(object);  // Añadir el objeto a la escena
-});
-
-    // Ajustar la cámara
-    camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
-    camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
 
     // Función de animación
     function animate() {
-      requestAnimationFrame(animate);
-      controls.update();  // Actualizar los controles interactivos
-      renderer.render(scene, camera);  // Renderiza la escena
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
     }
     animate();
 </script>
 
 </body>
 </html>
+
 
