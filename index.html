@@ -199,43 +199,41 @@ scene.add(directionalLight);
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.update();
 
-    // Cargar el archivo MTL y OBJ
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
-      materials.preload();
+// Cargar el archivo MTL y OBJ
+var mtlLoader = new THREE.MTLLoader();
+mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
+  materials.preload();
 
-      // Cargar el archivo OBJ
-      var objLoader = new THREE.OBJLoader();
-      objLoader.setMaterials(materials);
-      objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
-        object.position.set(0, 0, 0);  // Centrar el modelo
-        object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
+  // Cargar el archivo OBJ
+  var objLoader = new THREE.OBJLoader();
+  objLoader.setMaterials(materials);
+  objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
+    object.position.set(0, 0, 0);  // Centrar el modelo
+    object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
 
-        scene.add(object);  // Añadir el objeto a la escena
+    // Identificación y asignación a caras específicas
+    object.traverse((child) => {
+      if (child.isMesh) {
+        const geometry = child.geometry;
 
-        // Listener para aplicar el sticker
-        document.getElementById('image-input').addEventListener('change', function (event) {
-            var file = event.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var textureLoader = new THREE.TextureLoader();
-                    var texture = textureLoader.load(e.target.result);
-
-                    // Aplicar el sticker en una coordenada específica
-                    object.traverse(function (child) {
-                        if (child instanceof THREE.Mesh) {
-                            child.material.map = texture; // Asigna la textura de la imagen
-                            child.material.transparent = true; // Permitir transparencia
-                            child.material.needsUpdate = true;
-                        }
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
+        // Iteramos sobre las caras (Three.js las maneja en grupos de tres vértices)
+        geometry.faces.forEach((face, index) => {
+          // Aquí puedes elegir el índice de la cara y aplicar diferentes materiales
+          // Por ejemplo, asignar un color específico a la cara con índice 0
+          if (index === 0) {  // Ejemplo con la primera cara
+            face.color.setHex(0xff0000); // Cambia la cara al color rojo
+          }
         });
-      });
+
+        // Habilitamos colores de vértices si queremos que Three.js aplique los cambios
+        geometry.colorsNeedUpdate = true;
+      }
     });
+
+    scene.add(object);  // Añadir el objeto a la escena
+  });
+});
+
     // Ajustar la cámara
     camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
     camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
