@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Producto 3D</title>
     <style>
-        /* Estilos de contenedor */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -62,6 +61,7 @@
             <input type="range" id="move-x-slider" min="-200" max="200" value="0">
             <label>Mover Y:</label>
             <input type="range" id="move-y-slider" min="-200" max="200" value="0">
+            <button id="log-adjustments">Guardar Ajustes</button>
         </div>
     </div>
 
@@ -74,7 +74,7 @@
     <!-- Visor del producto 3D -->
     <div class="section">
         <h3>Vista del Producto 3D</h3>
-        <div id="product-viewer"></div>
+        <div id="product-viewer" style="width: 500px; height: 500px;"></div>
     </div>
 </div>
 
@@ -87,10 +87,10 @@
 <script>
     // Configuración 3D
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     camera.position.set(0, 5, 20);
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(500, 500);
+    renderer.setSize(500, 500); // Configuración específica para asegurar el tamaño del canvas
     document.getElementById('product-viewer').appendChild(renderer.domElement);
 
     // Cargar objeto
@@ -140,25 +140,26 @@
         imgScale = e.target.value / 100;
         drawImage();
         applyTextureTo3DModel();
-        logAdjustment(`Escala ajustada a ${imgScale}`);
     });
     document.getElementById('rotate-slider').addEventListener('input', function (e) {
         imgRotation = e.target.value * Math.PI / 180;
         drawImage();
         applyTextureTo3DModel();
-        logAdjustment(`Rotación ajustada a ${e.target.value} grados`);
     });
     document.getElementById('move-x-slider').addEventListener('input', function (e) {
         imgOffsetX = e.target.value;
         drawImage();
         applyTextureTo3DModel();
-        logAdjustment(`Desplazamiento en X ajustado a ${imgOffsetX}`);
     });
     document.getElementById('move-y-slider').addEventListener('input', function (e) {
         imgOffsetY = e.target.value;
         drawImage();
         applyTextureTo3DModel();
-        logAdjustment(`Desplazamiento en Y ajustado a ${imgOffsetY}`);
+    });
+
+    // Evento para generar la trazabilidad solo al presionar el botón
+    document.getElementById('log-adjustments').addEventListener('click', function () {
+        logAdjustment(`Escala: ${imgScale}, Rotación: ${imgRotation}, Desplazamiento X: ${imgOffsetX}, Desplazamiento Y: ${imgOffsetY}`);
     });
 
     // Dibujo de la imagen editada en el canvas
@@ -194,5 +195,4 @@
 </script>
 </body>
 </html>
-
 
