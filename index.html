@@ -204,34 +204,29 @@ var mtlLoader = new THREE.MTLLoader();
 mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
   materials.preload();
 
-  // Cargar el archivo OBJ
-  var objLoader = new THREE.OBJLoader();
-  objLoader.setMaterials(materials);
-  objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
+// Modificar la función de carga del modelo
+objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
     object.position.set(0, 0, 0);  // Centrar el modelo
     object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
 
-    // Identificación y asignación a caras específicas
+    // Identificación de caras y aplicación de color o textura
     object.traverse((child) => {
-      if (child.isMesh) {
-        const geometry = child.geometry;
+        if (child.isMesh) {
+            const geometry = child.geometry;
+            
+            if (geometry.isBufferGeometry) {
+                // Accede a las posiciones y mapeo UV de BufferGeometry
+                const uvAttribute = geometry.getAttribute('uv');  // Obtén coordenadas UV
 
-        // Iteramos sobre las caras (Three.js las maneja en grupos de tres vértices)
-        geometry.faces.forEach((face, index) => {
-          // Aquí puedes elegir el índice de la cara y aplicar diferentes materiales
-          // Por ejemplo, asignar un color específico a la cara con índice 0
-          if (index === 0) {  // Ejemplo con la primera cara
-            face.color.setHex(0xff0000); // Cambia la cara al color rojo
-          }
-        });
-
-        // Habilitamos colores de vértices si queremos que Three.js aplique los cambios
-        geometry.colorsNeedUpdate = true;
-      }
+                // Agrega lógica para asignar una textura o color específico a partes seleccionadas
+                // Por ejemplo, asignar una textura solo a una parte de la caja
+                child.material.map = new THREE.TextureLoader().load('path/to/texture.png');
+                child.material.needsUpdate = true;
+            }
+        }
     });
 
     scene.add(object);  // Añadir el objeto a la escena
-  });
 });
 
     // Ajustar la cámara
