@@ -87,11 +87,31 @@
 <script>
     // Configuración 3D
     var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf7f7f7);  // Fondo blanco
+    
+    // Cámara
     var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     camera.position.set(0, 5, 20);
+    camera.lookAt(scene.position);
+
+    // Renderizador
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(500, 500); // Configuración específica para asegurar el tamaño del canvas
-    document.getElementById('product-viewer').appendChild(renderer.domElement);
+    renderer.setClearColor(0xf7f7f7);  // Fondo del renderizador
+    var container = document.getElementById('product-viewer');
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    // Luces
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz ambiental
+    scene.add(ambientLight);
+
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Luz direccional
+    directionalLight.position.set(5, 10, 5).normalize();
+    scene.add(directionalLight);
+
+    // Controles de órbita
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.update();
 
     // Cargar objeto
     var object;
@@ -102,7 +122,8 @@
         objLoader.setMaterials(materials);
         objLoader.load('Corrugated_Mailing_Box_2.obj', function (loadedObject) {
             object = loadedObject;
-            object.scale.set(0.3, 0.3, 0.3);
+            object.position.set(0, 0, 0);  // Centrar el modelo
+            object.scale.set(0.3, 0.3, 0.3);  // Escala del modelo
             scene.add(object);
         });
     });
@@ -120,7 +141,7 @@
         logDiv.appendChild(logEntry);
     }
 
-    // Configuración de sliders y eventos
+    // Subir imagen y configuración inicial
     document.getElementById('image-input').addEventListener('change', function (event) {
         var file = event.target.files[0];
         if (file) {
@@ -136,6 +157,7 @@
         }
     });
 
+    // Controladores de edición
     document.getElementById('scale-slider').addEventListener('input', function (e) {
         imgScale = e.target.value / 100;
         drawImage();
@@ -157,12 +179,12 @@
         applyTextureTo3DModel();
     });
 
-    // Evento para generar la trazabilidad solo al presionar el botón
+    // Evento para registrar ajustes cuando se pulsa el botón
     document.getElementById('log-adjustments').addEventListener('click', function () {
         logAdjustment(`Escala: ${imgScale}, Rotación: ${imgRotation}, Desplazamiento X: ${imgOffsetX}, Desplazamiento Y: ${imgOffsetY}`);
     });
 
-    // Dibujo de la imagen editada en el canvas
+    // Renderizar la imagen editada
     function drawImage() {
         ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
         ctx.save();
@@ -173,6 +195,7 @@
         ctx.restore();
     }
 
+    // Aplicar la imagen modificada como textura
     function applyTextureTo3DModel() {
         if (object) {
             var texture = new THREE.CanvasTexture(imageCanvas);
@@ -189,6 +212,7 @@
     // Animación
     function animate() {
         requestAnimationFrame(animate);
+        controls.update();
         renderer.render(scene, camera);
     }
     animate();
