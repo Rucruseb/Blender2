@@ -213,29 +213,29 @@ scene.add(directionalLight);
 
         scene.add(object);  // Añadir el objeto a la escena
 
-        // Función para actualizar la textura del objeto
+        // Listener para aplicar el sticker
         document.getElementById('image-input').addEventListener('change', function (event) {
             var file = event.target.files[0];
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     var textureLoader = new THREE.TextureLoader();
-                    textureLoader.load(e.target.result, function (texture) {
-                        // Aplicar la textura al material del objeto
-                        object.traverse(function (child) {
-                            if (child instanceof THREE.Mesh) {
-                                child.material.map = texture;  // Asignar la textura difusa (color)
-                                child.material.needsUpdate = true;  // Asegurar que el material se actualice
-                            }
-                        });
+                    var texture = textureLoader.load(e.target.result);
+
+                    // Aplicar el sticker en una coordenada específica
+                    object.traverse(function (child) {
+                        if (child instanceof THREE.Mesh) {
+                            child.material.map = texture; // Asigna la textura de la imagen
+                            child.material.transparent = true; // Permitir transparencia
+                            child.material.needsUpdate = true;
+                        }
                     });
                 };
-                reader.readAsDataURL(file);  // Leer el archivo como una URL
+                reader.readAsDataURL(file);
             }
         });
       });
     });
-
     // Ajustar la cámara
     camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
     camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
