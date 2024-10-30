@@ -46,36 +46,58 @@
 </head>
 <body>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Producto 3D</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7; }
+        .container { display: flex; flex-direction: column; width: 90%; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .section { padding: 20px; border-bottom: 1px solid #ddd; }
+        #image-preview, #image-preview-2, #product-viewer { width: 100%; height: 300px; background-color: #eee; margin-bottom: 10px; }
+        .editor-controls input, .editor-controls label { display: inline-block; margin: 5px; }
+        #log { font-size: 0.9em; color: #333; max-height: 150px; overflow-y: scroll; background-color: #f9f9f9; padding: 10px; }
+    </style>
+</head>
+<body>
+
 <div class="container">
     <div class="section">
         <h3>Vista previa y edición de Imagen</h3>
         <canvas id="image-preview"></canvas>
         <input type="file" id="image-input" accept="image/*">
         <div class="editor-controls">
-            <label>Escala:</label>
-            <input type="range" id="scale-slider" min="1" max="300" value="100">
-            <label>Rotación:</label>
-            <input type="range" id="rotate-slider" min="0" max="360" value="0">
-            <label>Mover X:</label>
-            <input type="range" id="move-x-slider" min="-200" max="200" value="0">
-            <label>Mover Y:</label>
-            <input type="range" id="move-y-slider" min="-200" max="200" value="0">
+            <label>Escala:</label><input type="range" id="scale-slider" min="1" max="300" value="100">
+            <label>Rotación:</label><input type="range" id="rotate-slider" min="0" max="360" value="0">
+            <label>Mover X:</label><input type="range" id="move-x-slider" min="-200" max="200" value="0">
+            <label>Mover Y:</label><input type="range" id="move-y-slider" min="-200" max="200" value="0">
+            <button id="log-adjustments">Guardar Ajustes</button>
+        </div>
+        <div>
+            <label>Escala:</label><input type="number" id="scale-input" value="100">
+            <label>Rotación:</label><input type="number" id="rotation-input" value="0">
+            <label>Desplazamiento X:</label><input type="number" id="offset-x-input" value="0">
+            <label>Desplazamiento Y:</label><input type="number" id="offset-y-input" value="0">
         </div>
     </div>
 
     <div class="section">
-        <h3>Vista previa y edición de la Segunda Imagen</h3>
         <canvas id="image-preview-2"></canvas>
         <input type="file" id="image-input-2" accept="image/*">
         <div class="editor-controls">
-            <label>Escala:</label>
-            <input type="range" id="scale-slider-2" min="1" max="300" value="100">
-            <label>Rotación:</label>
-            <input type="range" id="rotate-slider-2" min="0" max="360" value="0">
-            <label>Mover X:</label>
-            <input type="range" id="move-x-slider-2" min="-200" max="200" value="0">
-            <label>Mover Y:</label>
-            <input type="range" id="move-y-slider-2" min="-200" max="200" value="0">
+            <label>Escala:</label><input type="range" id="scale-slider-2" min="1" max="300" value="100">
+            <label>Rotación:</label><input type="range" id="rotate-slider-2" min="0" max="360" value="0">
+            <label>Mover X:</label><input type="range" id="move-x-slider-2" min="-200" max="200" value="0">
+            <label>Mover Y:</label><input type="range" id="move-y-slider-2" min="-200" max="200" value="0">
+            <button id="log-adjustments-2">Guardar Ajustes</button>
+        </div>
+        <div>
+            <label>Escala:</label><input type="number" id="scale-input-2" value="100">
+            <label>Rotación:</label><input type="number" id="rotation-input-2" value="0">
+            <label>Desplazamiento X:</label><input type="number" id="offset-x-input-2" value="0">
+            <label>Desplazamiento Y:</label><input type="number" id="offset-y-input-2" value="0">
         </div>
     </div>
 
@@ -91,29 +113,28 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
 
 <script>
-    // Configuración 3D
-    var scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf7f7f7);
-    
-    var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    camera.position.set(0, 5, 20);
-    camera.lookAt(scene.position);
+  // Configuración 3D
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+camera.position.set(0, 5, 20);
+camera.lookAt(scene.position);
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0xf7f7f7);
-    var container = document.getElementById('product-viewer');
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
+var renderer = new THREE.WebGLRenderer();
+renderer.setClearColor(0xf7f7f7);
+var container = document.getElementById('product-viewer');
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
 
-    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+scene.add(ambientLight);
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 10, 5).normalize();
-    scene.add(directionalLight);
+var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight.position.set(5, 10, 5).normalize();
+scene.add(directionalLight);
 
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.update();
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.update();
+
 
     // Cargar objeto y aplicar texturas en función de rangos UV
     var object;
