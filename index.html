@@ -61,7 +61,22 @@
             <input type="range" id="move-x-slider" min="-200" max="200" value="0">
             <label>Mover Y:</label>
             <input type="range" id="move-y-slider" min="-200" max="200" value="0">
+            <label>Ancho:</label>
+            <input type="number" id="width-input" min="1" max="500" value="100">
+            <label>Alto:</label>
+            <input type="number" id="height-input" min="1" max="500" value="100">
             <button id="log-adjustments">Guardar Ajustes</button>
+        </div>
+        <!-- Entrada manual de coordenadas -->
+        <div>
+            <label>Escala:</label>
+            <input type="number" id="scale-input" value="100">
+            <label>Rotación:</label>
+            <input type="number" id="rotation-input" value="0">
+            <label>Desplazamiento X:</label>
+            <input type="number" id="offset-x-input" value="0">
+            <label>Desplazamiento Y:</label>
+            <input type="number" id="offset-y-input" value="0">
         </div>
     </div>
 
@@ -132,7 +147,7 @@
     var imageCanvas = document.getElementById('image-preview');
     var ctx = imageCanvas.getContext('2d');
     var img = new Image();
-    var imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
+    var imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0, imgWidth = 100, imgHeight = 100;
 
     function logAdjustment(action) {
         const logDiv = document.getElementById('log');
@@ -178,24 +193,55 @@
         drawImage();
         applyTextureTo3DModel();
     });
-
-    // Evento para registrar ajustes cuando se pulsa el botón
-    document.getElementById('log-adjustments').addEventListener('click', function () {
-        logAdjustment(`Escala: ${imgScale}, Rotación: ${imgRotation}, Desplazamiento X: ${imgOffsetX}, Desplazamiento Y: ${imgOffsetY}`);
+    document.getElementById('width-input').addEventListener('input', function (e) {
+        imgWidth = e.target.value;
+        drawImage();
+        applyTextureTo3DModel();
+    });
+    document.getElementById('height-input').addEventListener('input', function (e) {
+        imgHeight = e.target.value;
+        drawImage();
+        applyTextureTo3DModel();
     });
 
-    // Renderizar la imagen editada
+    // Entrada manual
+    document.getElementById('scale-input').addEventListener('input', function (e) {
+        imgScale = e.target.value / 100;
+        drawImage();
+        applyTextureTo3DModel();
+    });
+    document.getElementById('rotation-input').addEventListener('input', function (e) {
+        imgRotation = e.target.value * Math.PI / 180;
+        drawImage();
+        applyTextureTo3DModel();
+    });
+    document.getElementById('offset-x-input').addEventListener('input', function (e) {
+        imgOffsetX = e.target.value;
+        drawImage();
+        applyTextureTo3DModel();
+    });
+    document.getElementById('offset-y-input').addEventListener('input', function (e) {
+        imgOffsetY = e.target.value;
+        drawImage();
+        applyTextureTo3DModel();
+    });
+
+    // Registro de ajustes
+    document.getElementById('log-adjustments').addEventListener('click', function () {
+        logAdjustment(`Escala: ${imgScale}, Rotación: ${imgRotation}, Desplazamiento X: ${imgOffsetX}, Desplazamiento Y: ${imgOffsetY}, Ancho: ${imgWidth}, Alto: ${imgHeight}`);
+    });
+
+    // Renderizar imagen editada
     function drawImage() {
         ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
         ctx.save();
         ctx.translate(imageCanvas.width / 2 + parseFloat(imgOffsetX), imageCanvas.height / 2 + parseFloat(imgOffsetY));
         ctx.rotate(imgRotation);
         ctx.scale(imgScale, imgScale);
-        ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        ctx.drawImage(img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
         ctx.restore();
     }
 
-    // Aplicar la imagen modificada como textura
     function applyTextureTo3DModel() {
         if (object) {
             var texture = new THREE.CanvasTexture(imageCanvas);
@@ -219,4 +265,3 @@
 </script>
 </body>
 </html>
-
