@@ -389,32 +389,34 @@ function drawImage2() {
 
 
 
-    function applyTextureTo3DModel() {
-        if (object) {
-            var texture = new THREE.CanvasTexture(imageCanvas);
-            texture.needsUpdate = true;
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material.map = texture;
-                    child.material.needsUpdate = true;
-                }
-            });
-        }
+ // Aplicar la primera imagen como textura en una parte específica del modelo 3D
+function applyTextureTo3DModel() {
+    if (object) {
+        var texture1 = new THREE.CanvasTexture(imageCanvas);
+        texture1.needsUpdate = true;
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte1")) {
+                child.material.map = texture1;
+                child.material.needsUpdate = true;
+            }
+        });
     }
+}
 
-    // Aplicar la segunda imagen como textura en el modelo 3D
+// Aplicar la segunda imagen como textura en otra parte específica del modelo 3D
 function applyTextureTo3DModel2() {
     if (object) {
         var texture2 = new THREE.CanvasTexture(imageCanvas2);
         texture2.needsUpdate = true;
         object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte2")) {
                 child.material.map = texture2;
                 child.material.needsUpdate = true;
             }
         });
     }
 }
+
 
 
 function applyTextureToPart(mesh, canvas) {
