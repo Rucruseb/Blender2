@@ -205,7 +205,6 @@ var ctx2 = imageCanvas2.getContext('2d');
 var img2 = new Image();
 var imgScale2 = 1, imgRotation2 = 0, imgOffsetX2 = 0, imgOffsetY2 = 0;
 
-// Dibuja la imagen en el primer canvas
 function drawImage() {
     ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
     ctx.save();
@@ -214,9 +213,15 @@ function drawImage() {
     ctx.scale(imgScale, imgScale);
     ctx.drawImage(img, -img.width / 2, -img.height / 2);
     ctx.restore();
+    if (object) {
+        object.traverse((child) => {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte1")) {
+                applyTextureToPart(child, imageCanvas);  // Actualizar textura de la primera parte
+            }
+        });
+    }
 }
 
-// Dibuja la imagen en el segundo canvas
 function drawImage2() {
     ctx2.clearRect(0, 0, imageCanvas2.width, imageCanvas2.height);
     ctx2.save();
@@ -225,6 +230,13 @@ function drawImage2() {
     ctx2.scale(imgScale2, imgScale2);
     ctx2.drawImage(img2, -img2.width / 2, -img2.height / 2);
     ctx2.restore();
+    if (object) {
+        object.traverse((child) => {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte2")) {
+                applyTextureToPart(child, imageCanvas2);  // Actualizar textura de la segunda parte
+            }
+        });
+    }
 }
 
 
@@ -260,7 +272,7 @@ document.getElementById('image-input-2').addEventListener('change', function (ev
     }
 });
 
-// Aplicar la textura del primer canvas al modelo 3D (Parte1)
+// Aplicar la primera imagen como textura en una parte específica del modelo 3D
 function applyTextureTo3DModel() {
     if (object) {
         var texture1 = new THREE.CanvasTexture(imageCanvas);
@@ -274,7 +286,7 @@ function applyTextureTo3DModel() {
     }
 }
 
-// Aplicar la textura del segundo canvas al modelo 3D (Parte2)
+// Aplicar la segunda imagen como textura en otra parte específica del modelo 3D
 function applyTextureTo3DModel2() {
     if (object) {
         var texture2 = new THREE.CanvasTexture(imageCanvas2);
@@ -287,6 +299,16 @@ function applyTextureTo3DModel2() {
         });
     }
 }
+
+
+function applyTextureToPart(mesh, canvas) {
+    var texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    mesh.material.map = texture;
+    mesh.material.needsUpdate = true;
+}
+
+
 
     // Controladores para el primer canvas (imagen 1)
 document.getElementById('scale-slider').addEventListener('input', function (e) {
