@@ -24,12 +24,21 @@
             padding: 20px;
             border-bottom: 1px solid #ddd;
         }
-        #image-preview, #image-preview-2 {
+        #image-preview {
             width: 100%;
             height: 300px;
             background-color: #eee;
             margin-bottom: 10px;
         }
+
+        #image-preview2 {
+        width: 100%;
+        height: 300px;
+        background-color: #eee;
+        margin-bottom: 10px;
+        }
+
+        
         .editor-controls input, .editor-controls label {
             display: inline-block;
             margin: 5px;
@@ -47,140 +56,359 @@
 <body>
 
 <div class="container">
+    <!-- Sección de edición y vista previa de imagen -->
     <div class="section">
         <h3>Vista previa y edición de Imagen</h3>
         <canvas id="image-preview"></canvas>
         <input type="file" id="image-input" accept="image/*">
         <div class="editor-controls">
-            <!-- Controles para la primera imagen -->
+            <label>Escala:</label>
+            <input type="range" id="scale-slider" min="1" max="300" value="100">
+            <label>Rotación:</label>
+            <input type="range" id="rotate-slider" min="0" max="360" value="0">
+            <label>Mover X:</label>
+            <input type="range" id="move-x-slider" min="-200" max="200" value="0">
+            <label>Mover Y:</label>
+            <input type="range" id="move-y-slider" min="-200" max="200" value="0">
+            <label>Ancho:</label>
+            <input type="number" id="width-input" min="1" max="500" value="100">
+            <label>Alto:</label>
+            <input type="number" id="height-input" min="1" max="500" value="100">
+            <button id="log-adjustments">Guardar Ajustes</button>
         </div>
-    </div>
-    
-    <div class="section">
-        <h3>Vista previa y edición de la Segunda Imagen</h3>
-        <canvas id="image-preview-2"></canvas>
-        <input type="file" id="image-input-2" accept="image/*">
-        <div class="editor-controls">
-            <!-- Controles para la segunda imagen -->
+        <!-- Entrada manual de coordenadas -->
+        <div>
+            <label>Escala:</label>
+            <input type="number" id="scale-input" value="100">
+            <label>Rotación:</label>
+            <input type="number" id="rotation-input" value="0">
+            <label>Desplazamiento X:</label>
+            <input type="number" id="offset-x-input" value="0">
+            <label>Desplazamiento Y:</label>
+            <input type="number" id="offset-y-input" value="0">
         </div>
     </div>
 
+    <!-- Registro de ajustes -->
+    <div class="section">
+        <h3>Registro de Ajustes</h3>
+        <div id="log"></div>
+    </div>
+
+
+
+<!-- Vista previa y edición de la segunda imagen -->
+<canvas id="image-preview-2"></canvas>
+<input type="file" id="image-input-2" accept="image/*">
+<div class="editor-controls">
+    <label>Escala:</label>
+    <input type="range" id="scale-slider-2" min="1" max="300" value="100">
+    <label>Rotación:</label>
+    <input type="range" id="rotate-slider-2" min="0" max="360" value="0">
+    <label>Mover X:</label>
+    <input type="range" id="move-x-slider-2" min="-200" max="200" value="0">
+    <label>Mover Y:</label>
+    <input type="range" id="move-y-slider-2" min="-200" max="200" value="0">
+    <button id="log-adjustments-2">Guardar Ajustes</button>
+
+            <!-- Entrada manual de coordenadas -->
+        <div>
+            <label>Escala:</label>
+            <input type="number" id="scale-input-2" value="100">
+            <label>Rotación:</label>
+            <input type="number" id="rotation-input-2" value="0">
+            <label>Desplazamiento X:</label>
+            <input type="number" id="offset-x-input-2" value="0">
+            <label>Desplazamiento Y:</label>
+            <input type="number" id="offset-y-input-2" value="0">
+        </div>
+</div>
+
+
+    <!-- Visor del producto 3D -->
     <div class="section">
         <h3>Vista del Producto 3D</h3>
         <div id="product-viewer" style="width: 500px; height: 500px;"></div>
     </div>
 </div>
 
+<!-- Three.js y Controladores -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
 
 <script>
+    // Configuración 3D
     var scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf7f7f7);
+    scene.background = new THREE.Color(0xf7f7f7);  // Fondo blanco
     
+    // Cámara
     var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     camera.position.set(0, 5, 20);
     camera.lookAt(scene.position);
 
+    // Renderizador
     var renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0xf7f7f7);
+    renderer.setClearColor(0xf7f7f7);  // Fondo del renderizador
     var container = document.getElementById('product-viewer');
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
 
-    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    // Luces
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz ambiental
     scene.add(ambientLight);
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Luz direccional
     directionalLight.position.set(5, 10, 5).normalize();
     scene.add(directionalLight);
 
+    // Controles de órbita
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.update();
 
-    var object;
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
-        materials.preload();
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load('Corrugated_Mailing_Box_2.obj', function (loadedObject) {
-            object = loadedObject;
-            object.position.set(0, 0, 0);
-            object.scale.set(0.3, 0.3, 0.3);
-            scene.add(object);
+  // Cargar el objeto con partes específicas (Parte1, Parte2)
+var object;
+var mtlLoader = new THREE.MTLLoader();
+mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
+    materials.preload();
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.load('Corrugated_Mailing_Box_2.obj', function (loadedObject) {
+        object = loadedObject;
+        object.position.set(0, 0, 0);
+        object.scale.set(0.3, 0.3, 0.3);
 
-            // Aplica texturas en función de los rangos UV
-            applyTextureByUV(object, imageCanvas, targetUVRangeTapaExterior);
-        });
-    });
-
-    var imageCanvas = document.getElementById('image-preview');
-    var ctx = imageCanvas.getContext('2d');
-    var img = new Image();
-    var imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
-
-    var imageCanvas2 = document.getElementById('image-preview-2');
-    var ctx2 = imageCanvas2.getContext('2d');
-    var img2 = new Image();
-    var imgScale2 = 1, imgRotation2 = 0, imgOffsetX2 = 0, imgOffsetY2 = 0;
-
-    const targetUVRangeTapaExterior = { minU: -0.43, maxU: 0.33, minV: -0.58, maxV: 0.58 }; // Ajustar según las coordenadas específicas
-
-    function applyTextureByUV(object, canvas, targetUVRange) {
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.needsUpdate = true;
-
-        object.traverse((child) => {
+        // Revisar las mallas del objeto y asignar texturas a Parte1 y Parte2
+        object.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
-                const geometry = child.geometry;
-                geometry.computeBoundingBox();
-
-                const uvAttribute = geometry.attributes.uv;
-                const material = child.material.clone();
-
-                for (let i = 0; i < uvAttribute.count; i += 3) {
-                    const u1 = uvAttribute.getX(i);
-                    const v1 = uvAttribute.getY(i);
-                    const u2 = uvAttribute.getX(i + 1);
-                    const v2 = uvAttribute.getY(i + 1);
-                    const u3 = uvAttribute.getX(i + 2);
-                    const v3 = uvAttribute.getY(i + 2);
-
-                    if (
-                        (u1 >= targetUVRange.minU && u1 <= targetUVRange.maxU && v1 >= targetUVRange.minV && v1 <= targetUVRange.maxV) &&
-                        (u2 >= targetUVRange.minU && u2 <= targetUVRange.maxU && v2 >= targetUVRange.minV && v2 <= targetUVRange.maxV) &&
-                        (u3 >= targetUVRange.minU && u3 <= targetUVRange.maxU && v3 >= targetUVRange.minV && v3 <= targetUVRange.maxV)
-                    ) {
-                        material.map = texture;
-                        material.needsUpdate = true;
-                        child.material = material;
-                    }
+                if (child.name.includes("Parte1")) {
+                    applyTextureToPart(child, imageCanvas); 
+                } else if (child.name.includes("Parte2")) {
+                    applyTextureToPart(child, imageCanvas2);
                 }
             }
         });
-    }
 
-    function drawImage() {
-        ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
-        ctx.save();
-        ctx.translate(imageCanvas.width / 2 + parseFloat(imgOffsetX), imageCanvas.height / 2 + parseFloat(imgOffsetY));
-        ctx.rotate(imgRotation);
-        ctx.scale(imgScale, imgScale);
-        ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        ctx.restore();
-        applyTextureByUV(object, imageCanvas, targetUVRangeTapaExterior);
-    }
+        scene.add(object); 
+    });
+});
 
-    function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
+// Configuración y Dibujo de Imagenes en Canvases
+var imageCanvas = document.getElementById('image-preview');
+var ctx = imageCanvas.getContext('2d');
+var img = new Image();
+var imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
+
+var imageCanvas2 = document.getElementById('image-preview-2');
+var ctx2 = imageCanvas2.getContext('2d');
+var img2 = new Image();
+var imgScale2 = 1, imgRotation2 = 0, imgOffsetX2 = 0, imgOffsetY2 = 0;
+
+function drawImage() {
+    ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+    ctx.save();
+    ctx.translate(imageCanvas.width / 2 + parseFloat(imgOffsetX), imageCanvas.height / 2 + parseFloat(imgOffsetY));
+    ctx.rotate(imgRotation);
+    ctx.scale(imgScale, imgScale);
+    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    ctx.restore();
+    if (object) {
+        object.traverse((child) => {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte1")) {
+                applyTextureToPart(child, imageCanvas);  // Actualizar textura de la primera parte
+            }
+        });
     }
-    animate();
+}
+
+function drawImage2() {
+    ctx2.clearRect(0, 0, imageCanvas2.width, imageCanvas2.height);
+    ctx2.save();
+    ctx2.translate(imageCanvas2.width / 2 + parseFloat(imgOffsetX2), imageCanvas2.height / 2 + parseFloat(imgOffsetY2));
+    ctx2.rotate(imgRotation2);
+    ctx2.scale(imgScale2, imgScale2);
+    ctx2.drawImage(img2, -img2.width / 2, -img2.height / 2);
+    ctx2.restore();
+    if (object) {
+        object.traverse((child) => {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte2")) {
+                applyTextureToPart(child, imageCanvas2);  // Actualizar textura de la segunda parte
+            }
+        });
+    }
+}
+
+
+// Subida de la primera imagen
+document.getElementById('image-input').addEventListener('change', function (event) {
+    var file = event.target.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            img.onload = function () {
+                drawImage();
+                applyTextureTo3DModel();
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Subida de la segunda imagen
+document.getElementById('image-input-2').addEventListener('change', function (event) {
+    var file = event.target.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            img2.src = e.target.result;
+            img2.onload = function () {
+                drawImage2();
+                applyTextureTo3DModel2();
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Aplicar la primera imagen como textura en una parte específica del modelo 3D
+function applyTextureTo3DModel() {
+    if (object) {
+        var texture1 = new THREE.CanvasTexture(imageCanvas);
+        texture1.needsUpdate = true;
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte1")) {
+                child.material.map = texture1;
+                child.material.needsUpdate = true;
+            }
+        });
+    }
+}
+
+// Aplicar la segunda imagen como textura en otra parte específica del modelo 3D
+function applyTextureTo3DModel2() {
+    if (object) {
+        var texture2 = new THREE.CanvasTexture(imageCanvas2);
+        texture2.needsUpdate = true;
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh && child.name.includes("Parte2")) {
+                child.material.map = texture2;
+                child.material.needsUpdate = true;
+            }
+        });
+    }
+}
+
+
+function applyTextureToPart(mesh, canvas) {
+    var texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    mesh.material.map = texture;
+    mesh.material.needsUpdate = true;
+}
+
+
+
+    // Controladores para el primer canvas (imagen 1)
+document.getElementById('scale-slider').addEventListener('input', function (e) {
+    imgScale = e.target.value / 100;
+    drawImage();
+    applyTextureTo3DModel();
+});
+document.getElementById('rotate-slider').addEventListener('input', function (e) {
+    imgRotation = e.target.value * Math.PI / 180;
+    drawImage();
+    applyTextureTo3DModel();
+});
+document.getElementById('move-x-slider').addEventListener('input', function (e) {
+    imgOffsetX = e.target.value;
+    drawImage();
+    applyTextureTo3DModel();
+});
+document.getElementById('move-y-slider').addEventListener('input', function (e) {
+    imgOffsetY = e.target.value;
+    drawImage();
+    applyTextureTo3DModel();
+});
+
+// Controladores para el segundo canvas (imagen 2)
+document.getElementById('scale-slider-2').addEventListener('input', function (e) {
+    imgScale2 = e.target.value / 100;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+document.getElementById('rotate-slider-2').addEventListener('input', function (e) {
+    imgRotation2 = e.target.value * Math.PI / 180;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+document.getElementById('move-x-slider-2').addEventListener('input', function (e) {
+    imgOffsetX2 = e.target.value;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+document.getElementById('move-y-slider-2').addEventListener('input', function (e) {
+    imgOffsetY2 = e.target.value;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+
+// Entrada manual para imagen 1
+document.getElementById('scale-input').addEventListener('input', function (e) {
+    imgScale = e.target.value / 100;
+    drawImage();
+    applyTextureTo3DModel();
+});
+document.getElementById('rotation-input').addEventListener('input', function (e) {
+    imgRotation = e.target.value * Math.PI / 180;
+    drawImage();
+    applyTextureTo3DModel();
+});
+document.getElementById('offset-x-input').addEventListener('input', function (e) {
+    imgOffsetX = e.target.value;
+    drawImage();
+    applyTextureTo3DModel();
+});
+document.getElementById('offset-y-input').addEventListener('input', function (e) {
+    imgOffsetY = e.target.value;
+    drawImage();
+    applyTextureTo3DModel();
+});
+
+// Entrada manual para imagen 2
+document.getElementById('scale-input-2').addEventListener('input', function (e) {
+    imgScale2 = e.target.value / 100;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+document.getElementById('rotation-input-2').addEventListener('input', function (e) {
+    imgRotation2 = e.target.value * Math.PI / 180;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+document.getElementById('offset-x-input-2').addEventListener('input', function (e) {
+    imgOffsetX2 = e.target.value;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+document.getElementById('offset-y-input-2').addEventListener('input', function (e) {
+    imgOffsetY2 = e.target.value;
+    drawImage2();
+    applyTextureTo3DModel2();
+});
+
+
+
+
+    
+// Animación
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
 </script>
 </body>
 </html>
-
