@@ -271,18 +271,16 @@ scene.add(ambientLight);
         selectedPart = this.value;
     });
 
-    // Cargar la imagen y aplicarla como textura
+    // Cargar la imagen y aplicarla como textura sin FileReader
     document.getElementById('image-input').addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const textureLoader = new THREE.TextureLoader();
-                textureLoader.load(e.target.result, function (texture) {
-                    applyTextureToSelectedPart(texture);
-                });
-            };
-            reader.readAsDataURL(file);
+            const textureLoader = new THREE.TextureLoader();
+            const fileURL = URL.createObjectURL(file);
+            textureLoader.load(fileURL, function (texture) {
+                applyTextureToSelectedPart(texture);
+                URL.revokeObjectURL(fileURL); // Liberar memoria
+            });
         }
     });
 
