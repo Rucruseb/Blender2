@@ -254,41 +254,37 @@ scene.add(ambientLight);
     camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
     camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
 
-    // Aplicar textura a una parte específica seleccionada
-    function applyTextureToSelectedPart() {
-        const partName = document.getElementById('part-select').value;
-        const texture = new THREE.CanvasTexture(imageCanvas);
-        texture.needsUpdate = true;
+    // Función para aplicar la textura a la parte seleccionada
+    function applyTextureToSelectedPart(texture) {
+        if (!selectedPart || !object) return;
+
         object.traverse(function (child) {
-            if (child instanceof THREE.Mesh && child.name === partName) {
+            if (child instanceof THREE.Mesh && child.name === selectedPart) {
                 child.material.map = texture;
                 child.material.needsUpdate = true;
             }
         });
     }
 
-
-        // Actualizar textura de la parte seleccionada
+    // Actualizar la parte seleccionada
     document.getElementById('part-select').addEventListener('change', function () {
         selectedPart = this.value;
     });
 
-    // Cargar y aplicar imagen
+    // Cargar la imagen y aplicarla como textura
     document.getElementById('image-input').addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                img.src = e.target.result;
-                img.onload = function () {
-                    drawImage();
-                    applyTextureToSelectedPart();
-                };
+                const textureLoader = new THREE.TextureLoader();
+                textureLoader.load(e.target.result, function (texture) {
+                    applyTextureToSelectedPart(texture);
+                });
             };
             reader.readAsDataURL(file);
         }
     });
-
 
 
 
