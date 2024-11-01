@@ -267,6 +267,12 @@ scene.add(ambientLight);
         });
     }
 
+
+        // Actualizar textura de la parte seleccionada
+    document.getElementById('part-select').addEventListener('change', function () {
+        selectedPart = this.value;
+    });
+
     // Cargar y aplicar imagen
     document.getElementById('image-input').addEventListener('change', function (event) {
         const file = event.target.files[0];
