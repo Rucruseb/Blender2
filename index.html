@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,7 +31,7 @@
             background-color: #eee;
             margin-bottom: 10px;
         }
-        #image-preview {
+        #image-preview, #image-preview-2 {
             width: 100%;
             height: 300px;
             background-color: #eee;
@@ -47,7 +48,7 @@
     </div>
 
     <div class="section">
-        <h3>Vista previa y edición de Imagen</h3>
+        <h3>Vista previa y edición de Imagen 1</h3>
         <canvas id="image-preview"></canvas>
         <input type="file" id="image-input" accept="image/*">
         <div>
@@ -56,18 +57,17 @@
             <label>Mover X:</label><input type="range" id="move-x-slider" min="-200" max="200" value="0">
             <label>Mover Y:</label><input type="range" id="move-y-slider" min="-200" max="200" value="0">
         </div>
+    </div>
+
+    <div class="section">
+        <h3>Vista previa y edición de Imagen 2</h3>
+        <canvas id="image-preview-2"></canvas>
+        <input type="file" id="image-input-2" accept="image/*">
         <div>
-            <label for="part-select">Selecciona la parte del objeto:</label>
-            <select id="part-select">
-                <option value="Lado frontal cara externa.001">Lado frontal cara externa.001</option>
-                <option value="Lado derecho cara externa.001">Lado derecho cara externa.001</option>
-                <option value="Lado izquierdo cara externa.001">Lado izquierdo cara externa.001</option>
-                <option value="Tapa cara externa.001">Tapa cara externa.001</option>
-                <option value="Lado frontal cara externa.002">Lado frontal cara externa.002</option>
-                <option value="Lado derecho cara externa.002">Lado derecho cara externa.002</option>
-                <option value="Lado izquierdo cara externa.002">Lado izquierdo cara externa.002</option>
-                <option value="Tapa cara externa.002">Tapa cara externa.002</option>
-            </select>
+            <label>Escala:</label><input type="range" id="scale-slider-2" min="1" max="300" value="100">
+            <label>Rotación:</label><input type="range" id="rotate-slider-2" min="0" max="360" value="0">
+            <label>Mover X:</label><input type="range" id="move-x-slider-2" min="-200" max="200" value="0">
+            <label>Mover Y:</label><input type="range" id="move-y-slider-2" min="-200" max="200" value="0">
         </div>
     </div>
 </div>
@@ -78,7 +78,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
 
 <script>
-    // Configuración de la escena
+    // Configuración 3D
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     camera.position.set(0, 5, 20);
@@ -87,6 +87,7 @@
     renderer.setSize(500, 500);
     document.getElementById('product-viewer').appendChild(renderer.domElement);
 
+    // Luces
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
@@ -99,7 +100,7 @@
 
     let object;
 
-    // Cargar el archivo OBJ y MTL completo
+    // Cargar archivo MTL y OBJ
     const mtlLoader = new THREE.MTLLoader();
     mtlLoader.load('Prueba2.mtl', function (materials) {
         materials.preload();
@@ -116,8 +117,14 @@
     const ctx = imageCanvas.getContext('2d');
     const img = new Image();
 
-    let imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
+    const imageCanvas2 = document.getElementById('image-preview-2');
+    const ctx2 = imageCanvas2.getContext('2d');
+    const img2 = new Image();
 
+    let imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
+    let imgScale2 = 1, imgRotation2 = 0, imgOffsetX2 = 0, imgOffsetY2 = 0;
+
+    // Dibujar primera imagen
     function drawImage() {
         ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
         ctx.save();
@@ -128,10 +135,20 @@
         ctx.restore();
     }
 
-    // Aplicar textura a una parte específica seleccionada
-    function applyTextureToSelectedPart() {
-        const partName = document.getElementById('part-select').value;
-        const texture = new THREE.CanvasTexture(imageCanvas);
+    // Dibujar segunda imagen
+    function drawImage2() {
+        ctx2.clearRect(0, 0, imageCanvas2.width, imageCanvas2.height);
+        ctx2.save();
+        ctx2.translate(imageCanvas2.width / 2 + imgOffsetX2, imageCanvas2.height / 2 + imgOffsetY2);
+        ctx2.rotate(imgRotation2);
+        ctx2.scale(imgScale2, imgScale2);
+        ctx2.drawImage(img2, -img2.width / 2, -img2.height / 2);
+        ctx2.restore();
+    }
+
+    // Aplicar textura a una parte específica
+    function applyTextureToPart(partName, canvas) {
+        const texture = new THREE.CanvasTexture(canvas);
         texture.needsUpdate = true;
         object.traverse(function (child) {
             if (child instanceof THREE.Mesh && child.name === partName) {
@@ -141,7 +158,7 @@
         });
     }
 
-    // Cargar y aplicar imagen
+    // Cargar y aplicar primera imagen
     document.getElementById('image-input').addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
@@ -150,33 +167,71 @@
                 img.src = e.target.result;
                 img.onload = function () {
                     drawImage();
-                    applyTextureToSelectedPart();
+                    applyTextureToPart("Lado frontal cara externa.001", imageCanvas);  // Cambia el nombre según el nombre en Blender
                 };
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // Controles de edición
+    // Cargar y aplicar segunda imagen
+    document.getElementById('image-input-2').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                img2.src = e.target.result;
+                img2.onload = function () {
+                    drawImage2();
+                    applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);  // Cambia el nombre según el nombre en Blender
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Controladores de edición para la primera imagen
     document.getElementById('scale-slider').addEventListener('input', function (e) {
         imgScale = e.target.value / 100;
         drawImage();
-        applyTextureToSelectedPart();
+        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
     });
     document.getElementById('rotate-slider').addEventListener('input', function (e) {
         imgRotation = e.target.value * Math.PI / 180;
         drawImage();
-        applyTextureToSelectedPart();
+        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
     });
     document.getElementById('move-x-slider').addEventListener('input', function (e) {
         imgOffsetX = e.target.value;
         drawImage();
-        applyTextureToSelectedPart();
+        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
     });
     document.getElementById('move-y-slider').addEventListener('input', function (e) {
         imgOffsetY = e.target.value;
         drawImage();
-        applyTextureToSelectedPart();
+        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
+    });
+
+    // Controladores de edición para la segunda imagen
+    document.getElementById('scale-slider-2').addEventListener('input', function (e) {
+        imgScale2 = e.target.value / 100;
+        drawImage2();
+        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
+    });
+    document.getElementById('rotate-slider-2').addEventListener('input', function (e) {
+        imgRotation2 = e.target.value * Math.PI / 180;
+        drawImage2();
+        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
+    });
+    document.getElementById('move-x-slider-2').addEventListener('input', function (e) {
+        imgOffsetX2 = e.target.value;
+        drawImage2();
+        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
+    });
+    document.getElementById('move-y-slider-2').addEventListener('input', function (e) {
+        imgOffsetY2 = e.target.value;
+        drawImage2();
+        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
     });
 
     function animate() {
@@ -188,5 +243,3 @@
 </script>
 </body>
 </html>
-
-
