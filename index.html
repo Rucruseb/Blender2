@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,27 +13,88 @@
         }
         .container {
             display: flex;
-            flex-direction: column;
             width: 90%;
             max-width: 1200px;
             margin: 20px auto;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .section {
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
+        .image-section {
+            flex: 1;
+            padding: 35px;
+            border-right: 1px solid #ddd;
+            display: flex;
+            justify-content: left;
+            align-items: left;
         }
+
         #product-viewer {
-            width: 500px;
-            height: 500px;
-            background-color: #eee;
+          width: 500px;  /* Ancho pequeño */
+          height: 500px; /* Alto pequeño */
+          background-color: #fff;
+        }
+
+        #image-uploader {
+          text-align: center;
+          margin-top: 20px;
+        }
+
+        .description-section {
+            flex: 1;
+            padding: 20px;
+        }
+        .description-section h1 {
+            font-size: 24px;
             margin-bottom: 10px;
         }
-        #image-preview, #image-preview-2 {
+        .price {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .options {
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .options select, .quantity-selector input {
+            padding: 10px;
             width: 100%;
-            height: 300px;
-            background-color: #eee;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .quantity-selector {
+            margin-bottom: 15px;
+        }
+        .add-to-cart {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-to-cart:hover {
+            background-color: #0056b3;
+        }
+        .product-description {
+            margin-top: 20px;
+        }
+        .reviews {
+            margin-top: 20px;
+        }
+        .reviews .stars {
+            color: #ffc107;
+        }
+        .recommended-products {
+            margin-top: 20px;
+        }
+        .recommended-products h2 {
+            font-size: 18px;
             margin-bottom: 10px;
         }
     </style>
@@ -42,204 +102,152 @@
 <body>
 
 <div class="container">
-    <div class="section">
-        <h3>Vista del Producto 3D</h3>
-        <div id="product-viewer"></div>
+    <div class="image-section">
+        <div id="product-viewer"></div> <!-- El visor 3D se carga aquí -->
     </div>
-
-    <div class="section">
-        <h3>Vista previa y edición de Imagen 1</h3>
-        <canvas id="image-preview"></canvas>
-        <input type="file" id="image-input" accept="image/*">
-        <div>
-            <label>Escala:</label><input type="range" id="scale-slider" min="1" max="300" value="100">
-            <label>Rotación:</label><input type="range" id="rotate-slider" min="0" max="360" value="0">
-            <label>Mover X:</label><input type="range" id="move-x-slider" min="-200" max="200" value="0">
-            <label>Mover Y:</label><input type="range" id="move-y-slider" min="-200" max="200" value="0">
+    <div class="description-section">
+        <h1>Nombre del Producto</h1>
+        <p class="price">$99.99</p>
+        <div class="options">
+            <label for="size">Tamaño</label>
+            <select id="size">
+                <option>Pequeño</option>
+                <option>Mediano</option>
+                <option>Grande</option>
+            </select>
         </div>
-    </div>
+        <div class="options">
+            <label for="color">Color</label>
+            <select id="color">
+                <option>Rojo</option>
+                <option>Azul</option>
+                <option>Negro</option>
+            </select>
+        </div>
+        <div class="quantity-selector">
+            <label for="quantity">Cantidad</label>
+            <input type="number" id="quantity" min="1" value="1">
+        </div>
+        <div class="add-to-cart">Añadir al Carrito</div>
 
-    <div class="section">
-        <h3>Vista previa y edición de Imagen 2</h3>
-        <canvas id="image-preview-2"></canvas>
-        <input type="file" id="image-input-2" accept="image/*">
-        <div>
-            <label>Escala:</label><input type="range" id="scale-slider-2" min="1" max="300" value="100">
-            <label>Rotación:</label><input type="range" id="rotate-slider-2" min="0" max="360" value="0">
-            <label>Mover X:</label><input type="range" id="move-x-slider-2" min="-200" max="200" value="0">
-            <label>Mover Y:</label><input type="range" id="move-y-slider-2" min="-200" max="200" value="0">
+
+        <!-- Input para subir la imagen -->
+        <div id="image-uploader">
+            <label for="image-input">Selecciona una imagen para aplicar como textura:</label>
+            <input type="file" id="image-input" accept="image/*">
+        </div>
+
+        <div class="product-description">
+            <h2>Descripción del Producto</h2>
+            <p>Este es un gran producto que te encantará. Viene en varios colores y tamaños, y es perfecto para cualquier ocasión. Fabricado con materiales de alta calidad para garantizar su durabilidad.</p>
+        </div>
+
+        <div class="reviews">
+            <h2>Reseñas de Clientes</h2>
+            <p class="stars">★★★★☆</p>
+            <p>"Muy buen producto, excelente calidad y precio razonable." - Cliente Satisfecho</p>
+        </div>
+
+        <div class="recommended-products">
+            <h2>Productos Recomendados</h2>
+            <ul>
+                <li>Producto 1</li>
+                <li>Producto 2</li>
+                <li>Producto 3</li>
+            </ul>
         </div>
     </div>
 </div>
 
+<!-- Three.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- OrbitControls -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<!-- OBJ and MTL Loaders -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
 
 <script>
-    // Configuración 3D
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    camera.position.set(0, 5, 20);
+    // Crear la escena 3D
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf7f7f7);  // Cambiar el fondo de la escena a blanco
 
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(500, 500);
-    document.getElementById('product-viewer').appendChild(renderer.domElement);
 
-    // Luces
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
+    // Crear la cámara
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 5, 20);  // Ajustar la posición de la cámara
+    camera.lookAt(scene.position);  // Asegurar que la cámara mire al objeto
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 10, 5).normalize();
+    // Crear el renderizador
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(0xf7f7f7);  // Cambiar el fondo del renderizador a blanco
+    var container = document.getElementById('product-viewer');
+    renderer.setSize(container.clientWidth, container.clientHeight);  // Ajustar al tamaño del contenedor
+    document.getElementById('product-viewer').appendChild(renderer.domElement); // Insertar en el div del visor
+
+    // Añadir luces
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz ambiental más fuerte
+scene.add(ambientLight);
+
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(1, 1, 1).normalize();
     scene.add(directionalLight);
 
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    // Activar OrbitControls
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.update();
 
-    let object;
+    // Cargar el archivo MTL y OBJ
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
+      materials.preload();
 
-    // Cargar archivo MTL y OBJ
-    const mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Prueba2.mtl', function (materials) {
-        materials.preload();
-        const objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load('Prueba2.obj', function (loadedObject) {
-            object = loadedObject;
-            object.scale.set(0.3, 0.3, 0.3);
-            scene.add(object);
-        });
-    });
+      // Cargar el archivo OBJ
+      var objLoader = new THREE.OBJLoader();
+      objLoader.setMaterials(materials);
+      objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
+        object.position.set(0, 0, 0);  // Centrar el modelo
+        object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
 
-    const imageCanvas = document.getElementById('image-preview');
-    const ctx = imageCanvas.getContext('2d');
-    const img = new Image();
+        scene.add(object);  // Añadir el objeto a la escena
 
-    const imageCanvas2 = document.getElementById('image-preview-2');
-    const ctx2 = imageCanvas2.getContext('2d');
-    const img2 = new Image();
-
-    let imgScale = 1, imgRotation = 0, imgOffsetX = 0, imgOffsetY = 0;
-    let imgScale2 = 1, imgRotation2 = 0, imgOffsetX2 = 0, imgOffsetY2 = 0;
-
-    // Dibujar primera imagen
-    function drawImage() {
-        ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
-        ctx.save();
-        ctx.translate(imageCanvas.width / 2 + imgOffsetX, imageCanvas.height / 2 + imgOffsetY);
-        ctx.rotate(imgRotation);
-        ctx.scale(imgScale, imgScale);
-        ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        ctx.restore();
-    }
-
-    // Dibujar segunda imagen
-    function drawImage2() {
-        ctx2.clearRect(0, 0, imageCanvas2.width, imageCanvas2.height);
-        ctx2.save();
-        ctx2.translate(imageCanvas2.width / 2 + imgOffsetX2, imageCanvas2.height / 2 + imgOffsetY2);
-        ctx2.rotate(imgRotation2);
-        ctx2.scale(imgScale2, imgScale2);
-        ctx2.drawImage(img2, -img2.width / 2, -img2.height / 2);
-        ctx2.restore();
-    }
-
-    // Aplicar textura a una parte específica
-    function applyTextureToPart(partName, canvas) {
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.needsUpdate = true;
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh && child.name === partName) {
-                child.material.map = texture;
-                child.material.needsUpdate = true;
+        // Función para actualizar la textura del objeto
+        document.getElementById('image-input').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var textureLoader = new THREE.TextureLoader();
+                    textureLoader.load(e.target.result, function (texture) {
+                        // Aplicar la textura al material del objeto
+                        object.traverse(function (child) {
+                            if (child instanceof THREE.Mesh) {
+                                child.material.map = texture;  // Asignar la textura difusa (color)
+                                child.material.needsUpdate = true;  // Asegurar que el material se actualice
+                            }
+                        });
+                    });
+                };
+                reader.readAsDataURL(file);  // Leer el archivo como una URL
             }
         });
-    }
-
-    // Cargar y aplicar primera imagen
-    document.getElementById('image-input').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                img.src = e.target.result;
-                img.onload = function () {
-                    drawImage();
-                    applyTextureToPart("Lado frontal cara externa.001", imageCanvas);  // Cambia el nombre según el nombre en Blender
-                };
-            };
-            reader.readAsDataURL(file);
-        }
+      });
     });
 
-    // Cargar y aplicar segunda imagen
-    document.getElementById('image-input-2').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                img2.src = e.target.result;
-                img2.onload = function () {
-                    drawImage2();
-                    applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);  // Cambia el nombre según el nombre en Blender
-                };
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+    // Ajustar la cámara
+    camera.position.set(4.8, 3, 10);  // Colocar la cámara frente al objeto
+    camera.lookAt(scene.position);  // Asegurarse de que la cámara apunte al centro
 
-    // Controladores de edición para la primera imagen
-    document.getElementById('scale-slider').addEventListener('input', function (e) {
-        imgScale = e.target.value / 100;
-        drawImage();
-        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
-    });
-    document.getElementById('rotate-slider').addEventListener('input', function (e) {
-        imgRotation = e.target.value * Math.PI / 180;
-        drawImage();
-        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
-    });
-    document.getElementById('move-x-slider').addEventListener('input', function (e) {
-        imgOffsetX = e.target.value;
-        drawImage();
-        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
-    });
-    document.getElementById('move-y-slider').addEventListener('input', function (e) {
-        imgOffsetY = e.target.value;
-        drawImage();
-        applyTextureToPart("Lado frontal cara externa.001", imageCanvas);
-    });
-
-    // Controladores de edición para la segunda imagen
-    document.getElementById('scale-slider-2').addEventListener('input', function (e) {
-        imgScale2 = e.target.value / 100;
-        drawImage2();
-        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
-    });
-    document.getElementById('rotate-slider-2').addEventListener('input', function (e) {
-        imgRotation2 = e.target.value * Math.PI / 180;
-        drawImage2();
-        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
-    });
-    document.getElementById('move-x-slider-2').addEventListener('input', function (e) {
-        imgOffsetX2 = e.target.value;
-        drawImage2();
-        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
-    });
-    document.getElementById('move-y-slider-2').addEventListener('input', function (e) {
-        imgOffsetY2 = e.target.value;
-        drawImage2();
-        applyTextureToPart("Lado derecho cara externa.001", imageCanvas2);
-    });
-
+    // Función de animación
     function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+      controls.update();  // Actualizar los controles interactivos
+      renderer.render(scene, camera);  // Renderiza la escena
     }
     animate();
 </script>
+
 </body>
 </html>
