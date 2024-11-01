@@ -201,13 +201,13 @@ scene.add(ambientLight);
 
     // Cargar el archivo MTL y OBJ
     var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Corrugated_Mailing_Box_2.mtl', function (materials) {
+    mtlLoader.load('Prueba2.mtl', function (materials) {
       materials.preload();
 
       // Cargar el archivo OBJ
       var objLoader = new THREE.OBJLoader();
       objLoader.setMaterials(materials);
-      objLoader.load('Corrugated_Mailing_Box_2.obj', function (object) {
+      objLoader.load('Prueba2.obj', function (object) {
         object.position.set(0, 0, 0);  // Centrar el modelo
         object.scale.set(0.3, 0.3, 0.3);  // Ajustar la escala del modelo
 
