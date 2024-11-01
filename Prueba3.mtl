@@ -8,9 +8,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:/Carton Box_Box_BaseColor.png
-map_Ns C:/Carton Box_Box_Roughness.png
-map_Bump -bm 1.000000 C:/Carton Box_Box_Normal.png
+	map_Kd Corrugated_Mailing_Box_Closed_Diffuse.png 
+	map_Ka Corrugated_Mailing_Box_Closed_AO.png
+	map_Ke Corrugated_Mailing_Box_Closed_Glossiness.png
 
 newmtl Box.001
 Ka 1.000000 1.000000 1.000000
@@ -19,6 +19,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:/Carton Box Closed_Box_BaseColor.png
-map_Ns C:/Carton Box Closed_Box_Roughness.png
-map_Bump -bm 1.000000 C:/Carton Box Closed_Box_Normal.png
+	map_Kd Corrugated_Mailing_Box_Open_Diffuse.png 
+	map_Ka Corrugated_Mailing_Box_Open_AO.png
+	map_Ke Corrugated_Mailing_Box_Open_Glossiness.png
