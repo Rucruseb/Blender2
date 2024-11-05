@@ -231,8 +231,20 @@ renderer.domElement.addEventListener('click', onCanvasClick);
     
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Aquí va todo el código que interactúa con el DOM
-    // Esto garantiza que el 'part-select' y otros elementos existan antes de ser manipulados
+    // Asegurarse de que el elemento 'part-select' exista antes de agregar el event listener
+    const partSelectElement = document.getElementById('part-select');
+    if (partSelectElement) {
+        partSelectElement.addEventListener('change', function () {
+            if (object) {
+                selectedPart = this.value;
+            } else {
+                console.warn("El objeto aún no se ha cargado por completo.");
+            }
+        });
+    } else {
+        console.warn("El elemento 'part-select' no se encuentra en el DOM.");
+    }
+
 
     // Declaración global para el objeto y la parte seleccionada
     var object = null;
