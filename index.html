@@ -140,6 +140,19 @@
             <input type="file" id="image-input" accept="image/*">
         </div>
 
+        <div class="section">
+            <label for="part-select">Selecciona la parte del objeto:</label>
+            <select id="part-select">
+                <option value="A1">Closed_Box.001</option>
+                <option value="A2">Lado derecho cara externa.001</option>
+                <option value="A3">Lado izquierdo cara externa.001</option>
+                <option value="A4">Tapa cara externa.001</option>
+                <option value="B1">Lado frontal cara externa.002</option>
+                <option value="B2">Lado derecho cara externa.002</option>
+                <option value="B3">Lado izquierdo cara externa.002</option>
+                <option value="B9">B9</option>
+            </select>
+        </div>
 
         <div class="reviews">
             <h2>Reseñas de Clientes</h2>
@@ -196,145 +209,115 @@
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-  // Asegurar que el objeto esté listo antes de acceder a onCanvasClick
-    function onCanvasClick(event) {
-        if (!object) {
-            console.warn("El objeto aún no se ha cargado.");
-            return;
-        }
+// Función para manejar el clic en el canvas y seleccionar partes
+function onCanvasClick(event) {
+    // Calcular la posición del mouse en coordenadas normalizadas (rango -1 a 1)
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-        const intersects = raycaster.intersectObjects(object.children, true);
-        if (intersects.length > 0) {
-            const selectedMesh = intersects[0].object;
-            selectedPart = selectedMesh.name;
+    // Actualizar el rayo con la cámara y la posición del mouse
+    raycaster.setFromCamera(mouse, camera);
 
-            // Resetear la emisión en todas las partes antes de resaltar la seleccionada
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material.emissive.set(0x000000); // Apagar resaltado
-                }
-            });
+    // Calcular las intersecciones entre el rayo y las mallas del objeto
+    const intersects = raycaster.intersectObjects(object.children, true);
 
-            // Aplicar resaltado solo a la parte seleccionada
-            selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
-        }
+    if (intersects.length > 0) {
+        const selectedMesh = intersects[0].object; // Primera intersección es la más cercana
+        console.log("Parte seleccionada:", selectedMesh.name); // Imprimir el nombre de la parte seleccionada
+        
+        // Opcional: Almacenar la parte seleccionada
+        selectedPart = selectedMesh.name;
+        // Cambiar la apariencia para indicar la selección (opcional)
+        selectedMesh.material.emissive = new THREE.Color(0x555555); // Resaltar
+        const selectedMesh = intersects[0].object;
+        console.log("Parte seleccionada:", selectedMesh.name);
+        // Resetear la emisión en todas las partes antes de resaltar la seleccionada
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material.emissive.set(0x000000); // Apagar resaltado
+            }
+        });
+        // Aplicar resaltado solo a la parte seleccionada
+        selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
     }
-
-
+}
 
 // Agregar el evento de clic al canvas
 renderer.domElement.addEventListener('click', onCanvasClick);
 
+@@ -258,82 +260,83 @@
+        object.scale.set(0.3, 0.3, 0.3);
+        scene.add(object);
 
-
-
-    
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Asegurarse de que el elemento 'part-select' exista antes de agregar el event listener
-    const partSelectElement = document.getElementById('part-select');
-    if (partSelectElement) {
-        partSelectElement.addEventListener('change', function () {
-            if (object) {
-                selectedPart = this.value;
-            } else {
-                console.warn("El objeto aún no se ha cargado por completo.");
-            }
-        });
-    } else {
-        console.warn("El elemento 'part-select' no se encuentra en el DOM.");
-    }
-
-
-    // Declaración global para el objeto y la parte seleccionada
-    var object = null;
-    var selectedPart = null;
-
-    // Cargar el archivo MTL y OBJ
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Version obj con partes discriminadas3.mtl', function (materials) {
-        materials.preload();
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load('Version obj con partes discriminadas3.obj', function (loadedObject) {
-            object = loadedObject;
-            object.position.set(0, 0, 0);
-            object.scale.set(0.3, 0.3, 0.3);
-            scene.add(object);
-
-            // Clonar el material de cada parte para que sean independientes
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material = child.material.clone();  // Clonar material
-                    console.log("Parte cargada:", child.name); // Comprobación en consola
-                }
-            });
-
-            // Llamar a actualizarSelectorDePartes después de cargar el objeto
-            actualizarSelectorDePartes(object);
-        });
-    });
-
-    // Actualizar el selector de partes basado en el objeto cargado
-    function actualizarSelectorDePartes(objeto) {
-        var partSelect = document.getElementById('part-select');
-        if (!partSelect) {
-            console.warn("No se encuentra el elemento 'part-select' en el DOM.");
-            return;
-        }
-
-        // Limpiar el selector de partes antes de añadir opciones
-        partSelect.innerHTML = '';
-
-        objeto.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                var option = document.createElement('option');
-                option.value = child.name;
-                option.text = child.name;
-                partSelect.appendChild(option);
-            }
-        });
-
-        console.log("Selector de partes actualizado.");
-    }
-
-    // Evento para seleccionar la parte
-    document.getElementById('part-select').addEventListener('change', function () {
-        if (object) {
-            selectedPart = this.value;
-        } else {
-            console.warn("El objeto aún no se ha cargado por completo.");
-        }
-    });
-
-    // Función para aplicar textura solo cuando el objeto y la parte seleccionada están definidos
-    function applyTextureToSelectedPart(texture) {
-        if (!object || !selectedPart) {
-            console.warn("No se puede aplicar la textura. Asegúrate de que el objeto y la parte seleccionada estén definidos.");
-            return;
-        }
-
+        // Llenar el selector de partes con los nombres de cada malla
+        actualizarSelectorDePartes(object);
+        // Confirmación en consola de las partes encontradas
         object.traverse(function (child) {
-            if (child instanceof THREE.Mesh && child.name === selectedPart) {
-                child.material.map = texture;
-                child.material.needsUpdate = true;
-                console.log(`Textura aplicada a ${selectedPart}`);
+            if (child instanceof THREE.Mesh) {
+                console.log(child.name);  // Muestra el nombre de cada parte en consola
             }
         });
-    }
-
-    // Cargar la imagen y aplicarla como textura
-    document.getElementById('image-input').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const textureLoader = new THREE.TextureLoader();
-            const fileURL = URL.createObjectURL(file);
-            textureLoader.load(fileURL, function (texture) {
-                applyTextureToSelectedPart(texture);
-                URL.revokeObjectURL(fileURL);
-            });
+    // Clonar el material de cada parte para que sean independientes
+    object.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();  // Clonar material
+            console.log("Parte cargada:", child.name); // Comprobación en consola
         }
     });
+    
+    // Llenar el selector de partes
+    actualizarSelectorDePartes(object);
+  });
+});
+
+// Función para llenar el selector de partes automáticamente
+function actualizarSelectorDePartes(objeto) {
+    const partSelect = document.getElementById('part-select');
+    objeto.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+            const option = document.createElement('option');
+            option.value = child.name;
+            option.textContent = child.name;
+            partSelect.appendChild(option);
+        }
+    });
+}
+
+// Evento para seleccionar la parte
+document.getElementById('part-select').addEventListener('change', function () {
+    selectedPart = this.value;
+    console.log(`Parte seleccionada: ${selectedPart}`);
+});
+
+// Función para aplicar textura solo cuando el objeto y la parte seleccionada están definidos
+function applyTextureToSelectedPart(texture) {
+    if (!object || !selectedPart) {
+        console.warn("No se puede aplicar la textura. Asegúrate de que el objeto y la parte seleccionada estén definidos.");
+        return;
+    }
+
+    object.traverse(function (child) {
+        if (child instanceof THREE.Mesh && child.name === selectedPart) {
+            child.material.map = texture;
+            child.material.needsUpdate = true;
+            console.log(`Textura aplicada a ${selectedPart}`);
+        }
+    });
+}
+
+// Cargar la imagen y aplicar textura a la parte seleccionada
+document.getElementById('image-input').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        const textureLoader = new THREE.TextureLoader();
+        const fileURL = URL.createObjectURL(file);
+        textureLoader.load(fileURL, function (texture) {
+            applyTextureToSelectedPart(texture);
+            URL.revokeObjectURL(fileURL); // Liberar memoria
+        });
+    }
+});
 
 // Función de animación
 function animate() {
@@ -343,12 +326,13 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
- });
 
 
 
 
-    
+
+
+
 </script>
 
 </body>
