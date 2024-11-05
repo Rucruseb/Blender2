@@ -224,22 +224,42 @@
         if (child instanceof THREE.Mesh) {
             console.log(child.name);  // Esto debería funcionar sin errores
         }
-      });
+              });
+
+            // Registrar nombres de partes para el selector de partes
+    actualizarSelectorDePartes(object);
+        
+
     });
 
-    function applyTextureToSelectedPart(texture) {
-        if (!object) return;
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh && child.name === selectedPart) {
-                child.material.map = texture;
-                child.material.needsUpdate = true;
-            }
-        });
+// Actualiza la parte seleccionada del selector solo cuando el objeto ya esté disponible
+let selectedPart = null;
+
+// Evento para seleccionar la parte
+document.getElementById('part-select').addEventListener('change', function () {
+    if (object) {
+        selectedPart = this.value;
+    } else {
+        console.warn("El objeto aún no se ha cargado por completo.");
+    }
+});
+
+// Función para aplicar textura solo cuando el objeto y la parte seleccionada están definidos
+function applyTextureToSelectedPart(texture) {
+    if (!object || !selectedPart) {
+        console.warn("No se puede aplicar la textura. Asegúrate de que el objeto y la parte seleccionada estén definidos.");
+        return;
     }
 
-    document.getElementById('part-select').addEventListener('change', function () {
-        selectedPart = this.value;
+    object.traverse(function (child) {
+        if (child instanceof THREE.Mesh && child.name === selectedPart) {
+            child.material.map = texture;
+            child.material.needsUpdate = true;
+            console.log(`Textura aplicada a ${selectedPart}`);
+        }
     });
+}
+
 
     document.getElementById('image-input').addEventListener('change', function (event) {
         const file = event.target.files[0];
