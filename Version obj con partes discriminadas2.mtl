@@ -1,0 +1,24 @@
+# Blender 4.2.3 LTS MTL File: 'Version obj con partes discriminadas.blend'
+# www.blender.org
+
+newmtl Closed_Box_Texture
+Ns 100.000015
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.600000
+d 1.000000
+illum 1
+map_Kd textures/Corrugated_Mailing_Box_Closed_Diffuse.png
+map_Ks textures/Corrugated_Mailing_Box_Closed_Specular.png
+map_Bump textures/Corrugated_Mailing_Box_Closed_Normal.png
+
+newmtl Open_Box_Texture
+Ns 100.000015
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.600000
+d 1.000000
+illum 1
+map_Kd textures/Corrugated_Mailing_Box_Open_Diffuse.png
+map_Ks textures/Corrugated_Mailing_Box_Open_Specular.png
+map_Bump textures/Corrugated_Mailing_Box_Open_Normal.png
