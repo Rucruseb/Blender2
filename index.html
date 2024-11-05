@@ -253,6 +253,16 @@
       renderer.render(scene, camera);
     }
     animate();
+
+object.traverse(function(child) {
+    if (child instanceof THREE.Mesh) {
+        console.log(child.name);  // Imprime cada nombre de parte en la consola
+    }
+});
+
+
+
+    
 </script>
 
 </body>
