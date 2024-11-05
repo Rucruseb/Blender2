@@ -241,9 +241,10 @@ renderer.domElement.addEventListener('click', onCanvasClick);
 
     
 
-// Declaración global para el objeto y la parte seleccionada
-var object;
-var selectedPart = null;  // Se inicializa como null para evitar problemas de valor indefinido
+document.addEventListener('DOMContentLoaded', function() {
+    // Declaración global para el objeto y la parte seleccionada
+    var object;
+    var selectedPart = null;  // Inicializar como null
 
 // Cargar el archivo MTL y OBJ
 var mtlLoader = new THREE.MTLLoader();
@@ -317,16 +318,23 @@ function applyTextureToSelectedPart(texture) {
     });
 }
 
-// Cargar la imagen y aplicar textura a la parte seleccionada
-document.getElementById('image-input').addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    if (file) {
-        const textureLoader = new THREE.TextureLoader();
-        const fileURL = URL.createObjectURL(file);
-        textureLoader.load(fileURL, function (texture) {
-            applyTextureToSelectedPart(texture);
-            URL.revokeObjectURL(fileURL); // Liberar memoria
-        });
+        // Actualizar la parte seleccionada
+    document.getElementById('part-select').addEventListener('change', function () {
+        selectedPart = this.value;
+    });
+
+    
+
+    // Cargar la imagen y aplicarla como textura
+    document.getElementById('image-input').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const textureLoader = new THREE.TextureLoader();
+            const fileURL = URL.createObjectURL(file);
+            textureLoader.load(fileURL, function (texture) {
+                applyTextureToSelectedPart(texture);
+                URL.revokeObjectURL(fileURL);
+            });
     }
 });
 
