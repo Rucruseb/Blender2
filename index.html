@@ -196,40 +196,29 @@
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-function onCanvasClick(event) {
-    // Calcular la posición del ratón en coordenadas normalizadas de dispositivo
-    const rect = renderer.domElement.getBoundingClientRect();
-    const mouse = new THREE.Vector2(
-        ((event.clientX - rect.left) / rect.width) * 2 - 1,
-        -((event.clientY - rect.top) / rect.height) * 2 + 1
-    );
+  // Asegurar que el objeto esté listo antes de acceder a onCanvasClick
+    function onCanvasClick(event) {
+        if (!object) {
+            console.warn("El objeto aún no se ha cargado.");
+            return;
+        }
 
-    // Configurar raycaster para detectar intersecciones con el objeto
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(object.children, true);
+        const intersects = raycaster.intersectObjects(object.children, true);
+        if (intersects.length > 0) {
+            const selectedMesh = intersects[0].object;
+            selectedPart = selectedMesh.name;
 
-    // Si se detecta una intersección, seleccionar y resaltar la parte
-    if (intersects.length > 0) {
-        const selectedMesh = intersects[0].object;
+            // Resetear la emisión en todas las partes antes de resaltar la seleccionada
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material.emissive.set(0x000000); // Apagar resaltado
+                }
+            });
 
-        // Resetear la emisión en todas las partes antes de resaltar la seleccionada
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.emissive.set(0x000000); // Apagar resaltado
-            }
-        });
-
-        // Asegurarse de que selectedMesh tenga un material antes de intentar resaltarlo
-        if (selectedMesh && selectedMesh.material) {
             // Aplicar resaltado solo a la parte seleccionada
             selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
-            console.log(`Parte seleccionada: ${selectedMesh.name}`);
-            selectedPart = selectedMesh.name;  // Guardar la parte seleccionada para aplicar textura
-        } else {
-            console.warn("selectedMesh o su material es undefined");
         }
     }
-}
 
 
 
@@ -242,6 +231,9 @@ renderer.domElement.addEventListener('click', onCanvasClick);
     
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Aquí va todo el código que interactúa con el DOM
+    // Esto garantiza que el 'part-select' y otros elementos existan antes de ser manipulados
+
     // Declaración global para el objeto y la parte seleccionada
     var object = null;
     var selectedPart = null;
@@ -331,7 +323,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-}); // Cierre de DOMContentLoaded
 
 // Función de animación
 function animate() {
