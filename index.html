@@ -140,19 +140,6 @@
             <input type="file" id="image-input" accept="image/*">
         </div>
 
-        <div class="section">
-            <label for="part-select">Selecciona la parte del objeto:</label>
-            <select id="part-select">
-                <option value="A1">Closed_Box.001</option>
-                <option value="A2">Lado derecho cara externa.001</option>
-                <option value="A3">Lado izquierdo cara externa.001</option>
-                <option value="A4">Tapa cara externa.001</option>
-                <option value="B1">Lado frontal cara externa.002</option>
-                <option value="B2">Lado derecho cara externa.002</option>
-                <option value="B3">Lado izquierdo cara externa.002</option>
-                <option value="B9">B9</option>
-            </select>
-        </div>
 
         <div class="reviews">
             <h2>Reseñas de Clientes</h2>
@@ -209,55 +196,59 @@
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-// Función para manejar el clic en el canvas y seleccionar partes
-function onCanvasClick(event) {
-    // Calcular la posición del mouse en coordenadas normalizadas (rango -1 a 1)
-    const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    // Función para detectar el clic en el canvas y seleccionar la parte
+    function onCanvasClick(event) {
+        var rect = renderer.domElement.getBoundingClientRect();
+        var mouse = new THREE.Vector2();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-    // Actualizar el rayo con la cámara y la posición del mouse
-    raycaster.setFromCamera(mouse, camera);
+        var raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
 
-    // Calcular las intersecciones entre el rayo y las mallas del objeto
-    const intersects = raycaster.intersectObjects(object.children, true);
+        var intersects = raycaster.intersectObjects(object.children, true);
+        if (intersects.length > 0) {
+            var selectedMesh = intersects[0].object;
 
-    if (intersects.length > 0) {
-        const selectedMesh = intersects[0].object; // Primera intersección es la más cercana
-        console.log("Parte seleccionada:", selectedMesh.name); // Imprimir el nombre de la parte seleccionada
-        
-        // Opcional: Almacenar la parte seleccionada
-        selectedPart = selectedMesh.name;
-        // Cambiar la apariencia para indicar la selección (opcional)
-        selectedMesh.material.emissive = new THREE.Color(0x555555); // Resaltar
-        const selectedMesh = intersects[0].object;
-        console.log("Parte seleccionada:", selectedMesh.name);
-        // Resetear la emisión en todas las partes antes de resaltar la seleccionada
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.emissive.set(0x000000); // Apagar resaltado
-            }
-        });
-        // Aplicar resaltado solo a la parte seleccionada
-        selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
+            // Resetear la emisión en todas las partes antes de resaltar la seleccionada
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material.emissive.set(0x000000); // Apagar resaltado
+                }
+            });
+
+            // Resaltar solo la parte seleccionada
+            selectedMesh.material.emissive.set(0x555555);
+            selectedPart = selectedMesh;
+            console.log(`Parte seleccionada: ${selectedPart.name}`);
+        }
     }
-}
+
 
 // Agregar el evento de clic al canvas
 renderer.domElement.addEventListener('click', onCanvasClick);
 
-@@ -258,82 +260,83 @@
+
+
+
+    
+
+// Declaración global para el objeto y la parte seleccionada
+var object = null;
+var selectedPart = null;
+
+// Cargar el archivo MTL y OBJ
+var mtlLoader = new THREE.MTLLoader();
+mtlLoader.load('Version obj con partes discriminadas3.mtl', function (materials) {
+    materials.preload();
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.load('Version obj con partes discriminadas3.obj', function (loadedObject) {
+        object = loadedObject;
+        object.position.set(0, 0, 0);
         object.scale.set(0.3, 0.3, 0.3);
         scene.add(object);
 
-        // Llenar el selector de partes con los nombres de cada malla
-        actualizarSelectorDePartes(object);
-        // Confirmación en consola de las partes encontradas
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                console.log(child.name);  // Muestra el nombre de cada parte en consola
-            }
-        });
     // Clonar el material de cada parte para que sean independientes
     object.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
@@ -332,9 +323,8 @@ animate();
 
 
 
-
+    
 </script>
 
 </body>
 </html>
-
