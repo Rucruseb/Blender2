@@ -209,11 +209,11 @@
     var selectedPart = document.getElementById('part-select').value;
 
     var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Version obj con partes discriminadas.mtl', function (materials) {
+    mtlLoader.load('Version obj con partes discriminadas2.mtl', function (materials) {
       materials.preload();
       var objLoader = new THREE.OBJLoader();
       objLoader.setMaterials(materials);
-      objLoader.load('Version obj con partes discriminadas.obj', function (loadedObject) {
+      objLoader.load('Version obj con partes discriminadas2.obj', function (loadedObject) {
         object = loadedObject;
         object.position.set(0, 0, 0);
         object.scale.set(0.3, 0.3, 0.3);
