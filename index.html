@@ -205,43 +205,51 @@
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.update();
 
-    var object;
-    var selectedPart = document.getElementById('part-select').value;
+// Declaración global para el objeto y la parte seleccionada
+var object = null;
+var selectedPart = null;
 
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('Version obj con partes discriminadas2.mtl', function (materials) {
-      materials.preload();
-      var objLoader = new THREE.OBJLoader();
-      objLoader.setMaterials(materials);
-      objLoader.load('Version obj con partes discriminadas2.obj', function (loadedObject) {
+// Cargar el archivo MTL y OBJ
+var mtlLoader = new THREE.MTLLoader();
+mtlLoader.load('Version obj con partes discriminadas2.mtl', function (materials) {
+    materials.preload();
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.load('Version obj con partes discriminadas2.obj', function (loadedObject) {
         object = loadedObject;
         object.position.set(0, 0, 0);
         object.scale.set(0.3, 0.3, 0.3);
         scene.add(object);
-          
-              // Aquí es seguro utilizar object.traverse
-    object.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-            console.log(child.name);  // Esto debería funcionar sin errores
-        }
-              });
 
-            // Registrar nombres de partes para el selector de partes
-    actualizarSelectorDePartes(object);
-        
+        // Llenar el selector de partes con los nombres de cada malla
+        actualizarSelectorDePartes(object);
 
+        // Confirmación en consola de las partes encontradas
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                console.log(child.name);  // Muestra el nombre de cada parte en consola
+            }
+        });
     });
+});
 
-// Actualiza la parte seleccionada del selector solo cuando el objeto ya esté disponible
-let selectedPart = null;
+// Función para llenar el selector de partes automáticamente
+function actualizarSelectorDePartes(objeto) {
+    const partSelect = document.getElementById('part-select');
+    objeto.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+            const option = document.createElement('option');
+            option.value = child.name;
+            option.textContent = child.name;
+            partSelect.appendChild(option);
+        }
+    });
+}
 
 // Evento para seleccionar la parte
 document.getElementById('part-select').addEventListener('change', function () {
-    if (object) {
-        selectedPart = this.value;
-    } else {
-        console.warn("El objeto aún no se ha cargado por completo.");
-    }
+    selectedPart = this.value;
+    console.log(`Parte seleccionada: ${selectedPart}`);
 });
 
 // Función para aplicar textura solo cuando el objeto y la parte seleccionada están definidos
@@ -260,39 +268,29 @@ function applyTextureToSelectedPart(texture) {
     });
 }
 
-
-    document.getElementById('image-input').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const textureLoader = new THREE.TextureLoader();
-            const fileURL = URL.createObjectURL(file);
-            textureLoader.load(fileURL, function (texture) {
-                applyTextureToSelectedPart(texture);
-                URL.revokeObjectURL(fileURL);
-            });
-        }
-    });
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
+// Cargar la imagen y aplicar textura a la parte seleccionada
+document.getElementById('image-input').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        const textureLoader = new THREE.TextureLoader();
+        const fileURL = URL.createObjectURL(file);
+        textureLoader.load(fileURL, function (texture) {
+            applyTextureToSelectedPart(texture);
+            URL.revokeObjectURL(fileURL); // Liberar memoria
+        });
     }
-    animate();
-
-if (object) {
-    object.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-            console.log(child.name);
-        }
-    });
-} else {
-    console.warn("El objeto aún no se ha cargado.");
-}
-
-        var object = null; // Declaración global
-
 });
+
+// Función de animación
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
+
+
+
 
 
 
