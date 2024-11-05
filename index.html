@@ -242,8 +242,8 @@ renderer.domElement.addEventListener('click', onCanvasClick);
     
 
 // Declaración global para el objeto y la parte seleccionada
-var object = null;
-var selectedPart = null;
+var object;
+var selectedPart = null;  // Se inicializa como null para evitar problemas de valor indefinido
 
 // Cargar el archivo MTL y OBJ
 var mtlLoader = new THREE.MTLLoader();
@@ -257,31 +257,43 @@ mtlLoader.load('Version obj con partes discriminadas3.mtl', function (materials)
         object.scale.set(0.3, 0.3, 0.3);
         scene.add(object);
 
-    // Clonar el material de cada parte para que sean independientes
-    object.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-            child.material = child.material.clone();  // Clonar material
-            console.log("Parte cargada:", child.name); // Comprobación en consola
-        }
+        // Clonar el material de cada parte para que sean independientes
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material = child.material.clone();  // Clonar material
+                console.log("Parte cargada:", child.name); // Comprobación en consola
+            }
+        });
+
+        // Llamar a actualizarSelectorDePartes solo una vez, después de que el objeto esté cargado
+        actualizarSelectorDePartes(object);
     });
-    
-    // Llenar el selector de partes
-    actualizarSelectorDePartes(object);
-  });
 });
 
-// Función para llenar el selector de partes automáticamente
+// Actualizar el selector de partes basado en el objeto cargado
 function actualizarSelectorDePartes(objeto) {
-    const partSelect = document.getElementById('part-select');
+    var partSelect = document.getElementById('part-select');
+    if (!partSelect) {
+        console.warn("No se encuentra el elemento 'part-select' en el DOM.");
+        return;
+    }
+
+    // Limpiar el selector de partes antes de añadir opciones
+    partSelect.innerHTML = '';
+
     objeto.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
-            const option = document.createElement('option');
+            var option = document.createElement('option');
             option.value = child.name;
-            option.textContent = child.name;
+            option.text = child.name;
             partSelect.appendChild(option);
         }
     });
+
+    console.log("Selector de partes actualizado.");
 }
+
+
 
 // Evento para seleccionar la parte
 document.getElementById('part-select').addEventListener('change', function () {
