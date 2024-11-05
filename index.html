@@ -218,6 +218,12 @@
         object.position.set(0, 0, 0);
         object.scale.set(0.3, 0.3, 0.3);
         scene.add(object);
+          
+              // Aquí es seguro utilizar object.traverse
+    object.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+            console.log(child.name);  // Esto debería funcionar sin errores
+        }
       });
     });
 
@@ -254,10 +260,18 @@
     }
     animate();
 
-object.traverse(function(child) {
-    if (child instanceof THREE.Mesh) {
-        console.log(child.name);  // Imprime cada nombre de parte en la consola
-    }
+if (object) {
+    object.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+            console.log(child.name);
+        }
+    });
+} else {
+    console.warn("El objeto aún no se ha cargado.");
+}
+
+        var object = null; // Declaración global
+
 });
 
 
