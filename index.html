@@ -205,6 +205,43 @@
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.update();
 
+    // Crear un Raycaster y un Vector para almacenar la posición del mouse
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+// Función para manejar el clic en el canvas y seleccionar partes
+function onCanvasClick(event) {
+    // Calcular la posición del mouse en coordenadas normalizadas (rango -1 a 1)
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    // Actualizar el rayo con la cámara y la posición del mouse
+    raycaster.setFromCamera(mouse, camera);
+
+    // Calcular las intersecciones entre el rayo y las mallas del objeto
+    const intersects = raycaster.intersectObjects(object.children, true);
+
+    if (intersects.length > 0) {
+        const selectedMesh = intersects[0].object; // Primera intersección es la más cercana
+        console.log("Parte seleccionada:", selectedMesh.name); // Imprimir el nombre de la parte seleccionada
+        
+        // Opcional: Almacenar la parte seleccionada
+        selectedPart = selectedMesh.name;
+
+        // Cambiar la apariencia para indicar la selección (opcional)
+        selectedMesh.material.emissive = new THREE.Color(0x555555); // Resaltar
+    }
+}
+
+// Agregar el evento de clic al canvas
+renderer.domElement.addEventListener('click', onCanvasClick);
+
+
+
+
+    
+
 // Declaración global para el objeto y la parte seleccionada
 var object = null;
 var selectedPart = null;
