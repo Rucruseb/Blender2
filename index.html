@@ -228,14 +228,18 @@ function onCanvasClick(event) {
     // Agrega un console.log antes de la actualización
     console.log("Antes de actualizar:", document.getElementById("part-select"));
 
+// Asegúrate de que selectedPart tenga un valor válido antes de actualizar el campo de texto
+selectedPart = selectedMesh.name; // Asigna el nombre de la parte seleccionada
+
 // Actualizar el campo de texto con el nombre de la parte seleccionada
 const partSelect = document.getElementById('part-select');
-if (partSelect) {
+if (partSelect && selectedPart) {
     partSelect.value = selectedPart;
     console.log("Actualización del campo de texto:", partSelect.value);
 } else {
-    console.warn("Elemento 'part-select' no encontrado en el DOM");
+    console.warn("Elemento 'part-select' no encontrado en el DOM o 'selectedPart' no está definido");
 }
+
 }
     }
 
