@@ -32,7 +32,15 @@
           height: 500px;
           background-color: #fff;
         }
+        #small-canvas {
+        width: 50px;
+        height: 50px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        }
+        
 
+        
         #image-uploader {
           text-align: center;
           margin-top: 20px;
@@ -68,12 +76,7 @@
         .quantity-selector {
             margin-bottom: 15px;
         }
-                #small-canvas {
-            width: 50px;
-            height: 50px;
-            background-color: #f0f0f0;
-            cursor: pointer;
-        }
+
         .add-to-cart {
             background-color: #007bff;
             color: #fff;
@@ -350,49 +353,6 @@ function animate() {
 }
 animate();
 
-const largeCanvas = document.getElementById('product-viewer');
-const smallCanvas = document.getElementById('small-canvas');
-
-smallCanvas.addEventListener('click', swapCanvases);
-
-function swapCanvases() {
-    // Guardar tamaños actuales
-    const largeWidth = largeCanvas.width;
-    const largeHeight = largeCanvas.height;
-    const smallWidth = smallCanvas.width;
-    const smallHeight = smallCanvas.height;
-
-    // Intercambiar tamaños
-    largeCanvas.style.width = smallWidth + 'px';
-    largeCanvas.style.height = smallHeight + 'px';
-    smallCanvas.style.width = largeWidth + 'px';
-    smallCanvas.style.height = largeHeight + 'px';
-
-    // Actualizar el tamaño interno del canvas
-    largeCanvas.width = smallWidth;
-    largeCanvas.height = smallHeight;
-    smallCanvas.width = largeWidth;
-    smallCanvas.height = largeHeight;
-
-    // Obtener los contextos
-    const largeContext = largeCanvas.getContext('2d');
-    const smallContext = smallCanvas.getContext('2d');
-
-    // Guardar imágenes
-    const largeImageData = largeContext.getImageData(0, 0, largeWidth, largeHeight);
-    const smallImageData = smallContext.getImageData(0, 0, smallWidth, smallHeight);
-
-    // Intercambiar contenidos
-    largeContext.putImageData(smallImageData, 0, 0);
-    smallContext.putImageData(largeImageData, 0, 0);
-
-    // Configurar renderer al nuevo canvas grande
-    if (renderer && scene && camera) {
-        renderer.setSize(smallCanvas.width, smallCanvas.height);
-        renderer.domElement = smallCanvas;
-        renderer.render(scene, camera);
-    }
-}
 
 
 
