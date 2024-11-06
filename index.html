@@ -40,7 +40,11 @@
         cursor: pointer;
         }
         
-
+        #viewer-container {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+        }
         
         #image-uploader {
           text-align: center;
@@ -114,13 +118,10 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="image-section">
-        <div id="product-viewer"></div> <!-- El visor 3D se carga aquí -->
+<div id="viewer-container">
+    <canvas id="product-viewer"></canvas> <!-- Canvas grande -->
+</div>
 
-<div class="container">
-    <div class="image-section">
-        <div id="small-canvas"></div> <!--  -->
 
     <div class="description-section">
         <h1>Nombre del Producto</h1>
