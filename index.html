@@ -228,21 +228,16 @@ function onCanvasClick(event) {
     // Agrega un console.log antes de la actualización
     console.log("Antes de actualizar:", document.getElementById("part-select"));
 
-        // Actualizar el valor del selector si existe en el DOM
-        const partSelect = document.getElementById('part-select');
-        if (partSelect) {
-            partSelect.innerHTML = '';  // Limpiar opciones
-            const option = document.createElement('option');
-            option.value = selectedPart;
-            option.textContent = selectedPart;
-            partSelect.appendChild(option);
-            partSelect.value = selectedPart;
-            console.log("Actualización del selector:", partSelect.value);
-        } else {
-            console.warn("Elemento 'part-select' no encontrado en el DOM");
-        }
-    }
+// Actualizar el campo de texto con el nombre de la parte seleccionada
+const partSelect = document.getElementById('part-select');
+if (partSelect) {
+    partSelect.value = selectedPart;
+    console.log("Actualización del campo de texto:", partSelect.value);
+} else {
+    console.warn("Elemento 'part-select' no encontrado en el DOM");
 }
+}
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
     renderer.domElement.addEventListener('click', onCanvasClick);
