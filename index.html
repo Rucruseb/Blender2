@@ -226,14 +226,18 @@ function onCanvasClick(event) {
         // Aplicar resaltado solo a la parte seleccionada
         selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
 
-        // Actualizar el valor del selector
+        // Actualizar el valor del selector si existe en el DOM
         const partSelect = document.getElementById('part-select');
-        partSelect.innerHTML = '';  // Limpiar opciones
-         const option = document.createElement('option');
-        option.value = selectedPart;
-        option.textContent = selectedPart;
+        if (partSelect) {
+            partSelect.innerHTML = '';  // Limpiar opciones
+            const option = document.createElement('option');
+            option.value = selectedPart;
+            option.textContent = selectedPart;
             partSelect.appendChild(option);
             partSelect.value = selectedPart;
+            console.log("Actualización del selector:", partSelect.value);
+        } else {
+            console.warn("Elemento 'part-select' no encontrado en el DOM");
     }
 }
 
