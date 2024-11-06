@@ -226,6 +226,10 @@ function onCanvasClick(event) {
         // Aplicar resaltado solo a la parte seleccionada
         selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
 
+
+    // Agrega un console.log antes de la actualización
+    console.log("Antes de actualizar:", document.getElementById("part-select"));
+
         // Actualizar el valor del selector si existe en el DOM
         const partSelect = document.getElementById('part-select');
         if (partSelect) {
@@ -241,6 +245,11 @@ function onCanvasClick(event) {
         }
     }
 }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    renderer.domElement.addEventListener('click', onCanvasClick);
+});
+
 
 
 // Agregar el evento de clic al canvas
