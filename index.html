@@ -42,22 +42,22 @@
         }
 
 
-         /* Contenedor para canvas2D y botón */
+
+        /* Contenedor para canvas2D y botón */
         #canvas-container {
             width: 100px;
             height: 100px;
             background-color: #f0f0f0;
             cursor: pointer;
-            top: 0;
-            left: 0;
             position: relative;
         }
+        
         /* Botón en overlay */
         .overlay-button {
             display: none;
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 5px;
+            right: 5px;
             padding: 5px 10px;
             background-color: #007bff;
             color: #fff;
@@ -65,6 +65,7 @@
             font-size: 12px;
             cursor: pointer;
             transition: opacity 0.2s ease;
+            max-width: 90px; /* Limitar el ancho máximo del botón */
         }
         /* Mostrar el botón al pasar el mouse sobre el canvas2D */
         #canvas-container:hover .overlay-button {
