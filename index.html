@@ -130,8 +130,8 @@
 
 <div class="container">
     <div class="image-section">
-        <div id="product-viewer" style="width: 100px; height: 100px;"></div> <!-- El visor 3D se carga aquí -->
-        <div id="small-canvas" style="width: 100px; height: 100px;"></div> <!-- El visor 2D se carga aquí -->
+        <div id="product-viewer";"></div> <!-- El visor 3D se carga aquí -->
+        <div id="small-canvas";"></div> <!-- El visor 2D se carga aquí -->
         </div>
 
 
@@ -368,12 +368,17 @@ function animate() {
 }
 animate();
 
-    const canvas3D = document.getElementById('product-viewer');
+   const canvas3D = document.getElementById('product-viewer');
     const canvas2D = document.getElementById('small-canvas');
+
+    // Inicializar tamaños de los canvas con JavaScript
+    canvas3D.style.width = "500px";
+    canvas3D.style.height = "500px";
+    canvas2D.style.width = "100px";
+    canvas2D.style.height = "100px";
 
     // Función para intercambiar tamaños
     function toggleCanvasSizes() {
-        // Verifica el tamaño actual de canvas3D y cambia ambos tamaños en consecuencia
         if (canvas3D.style.width === "500px") {
             // Cambiar canvas3D a pequeño y canvas2D a grande
             canvas3D.style.width = "100px";
