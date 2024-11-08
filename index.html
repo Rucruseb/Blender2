@@ -40,7 +40,16 @@
         background-color: #f0f0f0;
         cursor: pointer;
         }
-        
+                /* Clases para intercambiar tamaños */
+        .large {
+            width: 500px !important;
+            height: 500px !important;
+        }
+
+        .small {
+            width: 100px !important;
+            height: 100px !important;
+        }
         #viewer-container {
             position: relative;
             display: flex;
@@ -359,49 +368,21 @@ function animate() {
 }
 animate();
 
-const largeCanvas = document.getElementById('product-viewer');
-const smallCanvas = document.getElementById('small-canvas');
+const canvas3D = document.getElementById('product-viewer');
+const canvas2D = document.getElementById('small-canvas');
 
-smallCanvas.addEventListener('click', swapCanvases);
 
-function swapCanvases() {
-    // Guardar tamaños actuales
-    const largeWidth = largeCanvas.width;
-    const largeHeight = largeCanvas.height;
-    const smallWidth = smallCanvas.width;
-    const smallHeight = smallCanvas.height;
-
-    // Intercambiar tamaños
-    largeCanvas.style.width = smallWidth + 'px';
-    largeCanvas.style.height = smallHeight + 'px';
-    smallCanvas.style.width = largeWidth + 'px';
-    smallCanvas.style.height = largeHeight + 'px';
-
-    // Actualizar el tamaño interno del canvas
-    largeCanvas.width = smallWidth;
-    largeCanvas.height = smallHeight;
-    smallCanvas.width = largeWidth;
-    smallCanvas.height = largeHeight;
-
-    // Obtener los contextos
-    const largeContext = largeCanvas.getContext('2d');
-    const smallContext = smallCanvas.getContext('2d');
-
-    // Guardar imágenes
-    const largeImageData = largeContext.getImageData(0, 0, largeWidth, largeHeight);
-    const smallImageData = smallContext.getImageData(0, 0, smallWidth, smallHeight);
-
-    // Intercambiar contenidos
-    largeContext.putImageData(smallImageData, 0, 0);
-    smallContext.putImageData(largeImageData, 0, 0);
-
-    // Configurar renderer al nuevo canvas grande
-    if (renderer && scene && camera) {
-        renderer.setSize(smallCanvas.width, smallCanvas.height);
-        renderer.domElement = smallCanvas;
-        renderer.render(scene, camera);
+ // Función para intercambiar tamaños
+    function toggleCanvasSizes() {
+        canvas3D.classList.toggle('large');
+        canvas3D.classList.toggle('small');
+        canvas2D.classList.toggle('large');
+        canvas2D.classList.toggle('small');
     }
-}
+
+    // Agrega eventos de clic
+    canvas3D.addEventListener('click', toggleCanvasSizes);
+    canvas2D.addEventListener('click', toggleCanvasSizes);
 
 
 
