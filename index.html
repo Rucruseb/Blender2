@@ -130,7 +130,7 @@
 
 <div class="container">
     <div class="image-section">
-        <canvas id="product-viewer"></canvas> <!-- El visor 3D se carga aquí -->
+        <canvas id="product-viewer" style="width: 500px; height: 500px;"></canvas> <!-- El visor 3D se carga aquí -->
         <canvas id="small-canvas"></canvas> <!-- El visor 2D se carga aquí -->
         </div>
 
@@ -379,17 +379,9 @@ animate();
         canvas.height = height;
     }
 
-    // Aplicar una técnica de redibujado para forzar la visibilidad del canvas3D
-    function forceRedraw(canvas) {
-        canvas.style.display = 'none';
-        canvas.offsetHeight; // Forzar reflujo
-        canvas.style.display = 'block';
-    }
-
     // Establecer tamaños iniciales y aplicar redibujo
     setCanvasSize(canvas3D, 500, 500);
     setCanvasSize(canvas2D, 100, 100);
-    forceRedraw(canvas3D);
 
     // Función para intercambiar tamaños
     function toggleCanvasSizes() {
@@ -402,8 +394,6 @@ animate();
             setCanvasSize(canvas3D, 500, 500);
             setCanvasSize(canvas2D, 100, 100);
         }
-        // Aplicar redibujo después de cada cambio
-        forceRedraw(canvas3D);
     }
 
     // Agrega eventos de clic
