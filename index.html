@@ -42,7 +42,7 @@
         }
 
 
-                /* Botón en overlay */
+        /* Botón en overlay */
         .overlay-button {
             display: none;
             position: absolute;
@@ -57,9 +57,8 @@
             transition: opacity 0.2s ease;
         }
         /* Mostrar el botón al pasar el mouse sobre el canvas2D */
-        #small-canvas:hover + .overlay-button {
+        #small-canvas:hover .overlay-button {
             display: block;
-            opacity: 1;
         }
 
         
@@ -415,24 +414,25 @@ animate();
         }
     }
 
-    // Eventos de clic
-    canvas3D.addEventListener('click', toggleCanvasPosition);
-    canvas2D.addEventListener('click', toggleCanvasPosition);
+ document.addEventListener('DOMContentLoaded', function() {
+        const canvas2D = document.getElementById('small-canvas');
+        const button = document.getElementById('canvas2d-button');
 
-        // Posicionar el botón sobre el canvas2D al pasar el mouse
-    canvas2D.addEventListener('mouseenter', () => {
-        button.style.display = 'block';
+        // Mostrar el botón al pasar el mouse sobre el canvas2D
+        canvas2D.addEventListener('mouseenter', () => {
+            button.style.display = 'block';
+        });
+
+        // Ocultar el botón al salir del canvas2D
+        canvas2D.addEventListener('mouseleave', () => {
+            button.style.display = 'none';
+        });
+
+        // Acción del botón
+        button.addEventListener('click', () => {
+            alert('¡Botón en canvas2D presionado!');
+        });
     });
-
-    canvas2D.addEventListener('mouseleave', () => {
-        button.style.display = 'none';
-    });
-
-    // Acción del botón
-    button.addEventListener('click', () => {
-        alert('¡Botón en canvas2D presionado!');
-    });
-
 
 
     
