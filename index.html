@@ -52,25 +52,22 @@
             position: relative;
         }
         
-        /* Botón en overlay */
-        .overlay-button {
-            display: none;
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 5px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-            max-width: 90px; /* Limitar el ancho máximo del botón */
-        }
-        /* Mostrar el botón al pasar el mouse sobre el canvas2D */
-        #canvas-container:hover .overlay-button {
-            display: block;
-        }
+.overlay-button {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+#canvas-container:hover .overlay-button {
+    display: block;
+}
                 /* Clases para intercambiar tamaños */
         .large {
             width: 500px !important;
@@ -166,11 +163,15 @@
 
 <div class="container">
     <div class="image-section">
-        <div id="product-viewer" style="width: 500px; height: 500px;"></div> <!-- El visor 3D se carga aquí -->
-        <canvas id="small-canvas"></canvas> <!-- El visor 2D se carga aquí -->
-          <div class="overlay-button" id="canvas2d-button" style="top: 10px; left: 10px;">Click aquí</div>
+        <div id="product-viewer" style="width: 500px; height: 500px"></div> <!-- El visor 3D se carga aquí -->
         </div>
+    
+<div id="canvas-container">
+    <canvas id="small-canvas"></canvas>
+    <div class="overlay-button" id="canvas2d-button">Click aquí</div>
+</div>
 
+    
 
     <div class="description-section">
         <h1>Nombre del Producto</h1>
