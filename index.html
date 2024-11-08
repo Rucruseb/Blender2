@@ -370,6 +370,14 @@ animate();
 
    const canvas3D = document.getElementById('product-viewer');
     const canvas2D = document.getElementById('small-canvas');
+    
+        // Inicializar tamaños visuales y internos de los canvas con JavaScript
+    function setCanvasSize(canvas, width, height) {
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        canvas.width = width;
+        canvas.height = height;
+    }
 
     // Inicializar tamaños de los canvas con JavaScript
     canvas3D.style.width = "500px";
