@@ -40,6 +40,29 @@
         cursor: pointer;
         transition: width 0.3s ease, height 0.3s ease;
         }
+
+
+                /* Botón en overlay */
+        .overlay-button {
+            display: none;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        /* Mostrar el botón al pasar el mouse sobre el canvas2D */
+        #small-canvas:hover + .overlay-button {
+            display: block;
+            opacity: 1;
+        }
+
+        
                 /* Clases para intercambiar tamaños */
         .large {
             width: 500px !important;
@@ -137,6 +160,7 @@
     <div class="image-section">
         <div id="product-viewer" style="width: 500px; height: 500px;"></div> <!-- El visor 3D se carga aquí -->
         <div id="small-canvas"></div> <!-- El visor 2D se carga aquí -->
+        <div class="overlay-button" id="canvas2d-button">Click aquí</div>
         </div>
 
 
@@ -394,6 +418,24 @@ animate();
     // Eventos de clic
     canvas3D.addEventListener('click', toggleCanvasPosition);
     canvas2D.addEventListener('click', toggleCanvasPosition);
+
+        // Posicionar el botón sobre el canvas2D al pasar el mouse
+    canvas2D.addEventListener('mouseenter', () => {
+        button.style.display = 'block';
+    });
+
+    canvas2D.addEventListener('mouseleave', () => {
+        button.style.display = 'none';
+    });
+
+    // Acción del botón
+    button.addEventListener('click', () => {
+        alert('¡Botón en canvas2D presionado!');
+    });
+
+
+
+    
 </script>
 
 </body>
