@@ -124,6 +124,11 @@
             padding: 20px;
             border-bottom: 1px solid #ddd;
         }
+        /* Clase para mover canvas3D a la derecha */
+        .moved {
+        left: 150px; /* Ajusta según lo necesario */
+        }
+        
     </style>
 </head>
 <body>
@@ -368,30 +373,27 @@ function animate() {
 }
 animate();
 
-     const canvas3D = document.getElementById('product-viewer');
+   const canvas3D = document.getElementById('product-viewer');
     const canvas2D = document.getElementById('small-canvas');
 
-    // Función para intercambiar tamaños
-    function toggleCanvasSizes() {
-        // Verifica el tamaño actual de canvas3D y cambia ambos tamaños en consecuencia
-        if (canvas3D.style.width === "500px") {
-            // Cambiar canvas3D a pequeño y canvas2D a grande
-            canvas3D.style.width = "100px";
-            canvas3D.style.height = "100px";
-            canvas2D.style.width = "500px";
-            canvas2D.style.height = "500px";
+    // Función para alternar la posición
+    function toggleCanvasPosition() {
+        if (canvas3D.classList.contains('moved')) {
+            // Remueve el desplazamiento si está aplicado
+            canvas3D.classList.remove('moved');
+            canvas2D.style.width = '100px';
+            canvas2D.style.height = '100px';
         } else {
-            // Cambiar canvas3D a grande y canvas2D a pequeño
-            canvas3D.style.width = "500px";
-            canvas3D.style.height = "500px";
-            canvas2D.style.width = "100px";
-            canvas2D.style.height = "100px";
+            // Mueve el canvas3D y expande el canvas2D
+            canvas3D.classList.add('moved');
+            canvas2D.style.width = '500px';
+            canvas2D.style.height = '500px';
         }
     }
 
-    // Agrega eventos de clic
-    canvas3D.addEventListener('click', toggleCanvasSizes);
-    canvas2D.addEventListener('click', toggleCanvasSizes);
+    // Eventos de clic
+    canvas3D.addEventListener('click', toggleCanvasPosition);
+    canvas2D.addEventListener('click', toggleCanvasPosition);
 </script>
 
 </body>
