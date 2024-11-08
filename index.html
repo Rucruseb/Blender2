@@ -368,31 +368,24 @@ function animate() {
 }
 animate();
 
-    const canvas3D = document.getElementById('product-viewer');
+     const canvas3D = document.getElementById('product-viewer');
     const canvas2D = document.getElementById('small-canvas');
-
-    // Inicializar tamaños visuales y internos de los canvas con JavaScript
-    function setCanvasSize(canvas, width, height) {
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        canvas.width = width;
-        canvas.height = height;
-    }
-
-    // Establecer tamaños iniciales y aplicar redibujo
-    setCanvasSize(canvas3D, 500, 500);
-    setCanvasSize(canvas2D, 100, 100);
 
     // Función para intercambiar tamaños
     function toggleCanvasSizes() {
+        // Verifica el tamaño actual de canvas3D y cambia ambos tamaños en consecuencia
         if (canvas3D.style.width === "500px") {
             // Cambiar canvas3D a pequeño y canvas2D a grande
-            setCanvasSize(canvas3D, 100, 100);
-            setCanvasSize(canvas2D, 500, 500);
+            canvas3D.style.width = "100px";
+            canvas3D.style.height = "100px";
+            canvas2D.style.width = "500px";
+            canvas2D.style.height = "500px";
         } else {
             // Cambiar canvas3D a grande y canvas2D a pequeño
-            setCanvasSize(canvas3D, 500, 500);
-            setCanvasSize(canvas2D, 100, 100);
+            canvas3D.style.width = "500px";
+            canvas3D.style.height = "500px";
+            canvas2D.style.width = "100px";
+            canvas2D.style.height = "100px";
         }
     }
 
