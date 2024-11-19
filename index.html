@@ -3,222 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor 3D</title>
+    <title>Editor 3D Completo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-        }
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+}
 
-        .container {
-            display: flex;
-            height: 100vh;
-        }
+.container {
+    display: flex;
+    height: 100vh;
+}
 
-        /* Sidebar */
-        .sidebar {
-            width: 300px;
-            background-color: #1e1e1e;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
+.sidebar {
+    width: 300px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
 
-        .sidebar h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #00bcd4;
-        }
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #00bcd4;
+}
 
-        .sidebar label {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #ccc;
-        }
+.tab button {
+    margin: 5px 0;
+    padding: 10px;
+    background-color: #2e2e2e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-        .sidebar input, .sidebar button {
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-        }
+.tab button:hover {
+    background-color: #00bcd4;
+}
 
-        .sidebar input {
-            background-color: #2e2e2e;
-            color: white;
-        }
+.tab-content {
+    display: none;
+    margin-top: 20px;
+}
 
-        .sidebar button {
-            background-color: #00bcd4;
-            color: black;
-            cursor: pointer;
-        }
+.tab-content.active {
+    display: block;
+}
 
-        .sidebar button:hover {
-            background-color: #007bff;
-        }
+.viewer {
+    flex: 1;
+    position: relative;
+    background-color: #fff;
+}
 
-        /* Main Viewer */
-        .viewer {
-            flex: 1;
-            position: relative;
-            background-color: #fff;
-        }
+#product-viewer {
+    width: 100%;
+    height: 100%;
+}
 
-        #product-viewer {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Hidden Dropdown */
-        #part-select {
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
+        <!-- Panel Lateral -->
         <div class="sidebar">
-            <h2>Personalización 3D</h2>
-            <label>Parte seleccionada</label>
-            <div id="selected-part">Haz clic en una parte</div>
-
-            <label for="image-input">Cargar textura</label>
-            <input type="file" id="image-input" accept="image/*">
-
-            <button id="reset-button">Restablecer Texturas</button>
+            <h2>Opciones de Personalización</h2>
+            <div class="tab">
+                <button data-tab="color">Colores</button>
+                <button data-tab="image">Texturas</button>
+                <button data-tab="text">Texto</button>
+                <button data-tab="export">Exportar</button>
+            </div>
+            <!-- Contenidos del Tab -->
+            <div class="tab-content" id="color-tab">
+                <h3>Cambiar Color</h3>
+                <input type="color" id="color-picker">
+            </div>
+            <div class="tab-content" id="image-tab">
+                <h3>Cargar Imagen</h3>
+                <input type="file" id="image-input" accept="image/*">
+                <h3>Opciones de Textura</h3>
+                <label>Escala</label>
+                <input type="range" id="scale-slider" min="0.5" max="3" step="0.1" value="1">
+                <label>Rotación</label>
+                <input type="range" id="rotation-slider" min="0" max="360" step="1" value="0">
+                <label>Offset X</label>
+                <input type="range" id="offset-x-slider" min="-1" max="1" step="0.1" value="0">
+                <label>Offset Y</label>
+                <input type="range" id="offset-y-slider" min="-1" max="1" step="0.1" value="0">
+            </div>
+            <div class="tab-content" id="text-tab">
+                <h3>Añadir Texto</h3>
+                <input type="text" id="text-input" placeholder="Escribe tu texto">
+                <button id="add-text">Añadir Texto</button>
+            </div>
+            <div class="tab-content" id="export-tab">
+                <h3>Exportar Modelo</h3>
+                <button id="export-model">Exportar como .GLTF</button>
+                <button id="export-image">Exportar Vista 2D</button>
+            </div>
         </div>
 
-        <!-- 3D Viewer -->
+        <!-- Canvas Principal -->
         <div class="viewer">
             <div id="product-viewer"></div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
-    <script>
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf7f7f7);
+    <script src="main.js"></script>
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 5, 20);
 
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth - 300, window.innerHeight);
-        document.getElementById('product-viewer').appendChild(renderer.domElement);
+    // Escena y renderizador
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf7f7f7);
 
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 5, 20);
 
-        // Luces
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth - 300, window.innerHeight);
+document.getElementById('product-viewer').appendChild(renderer.domElement);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(1, 1, 1).normalize();
-        scene.add(directionalLight);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-        // Variables globales
-        let object = null;
-        let selectedPart = null;
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
+// Iluminación
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+scene.add(ambientLight);
 
-        // Cargar modelo OBJ y MTL
-        const mtlLoader = new THREE.MTLLoader();
-        mtlLoader.load('Version obj con partes discriminadas3.mtl', (materials) => {
-            materials.preload();
-            const objLoader = new THREE.OBJLoader();
-            objLoader.setMaterials(materials);
-            objLoader.load('Version obj con partes discriminadas3.obj', (loadedObject) => {
-                object = loadedObject;
-                object.position.set(0, 0, 0);
-                object.scale.set(0.3, 0.3, 0.3);
-                scene.add(object);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(1, 1, 1).normalize();
+scene.add(directionalLight);
 
-                // Clonar materiales para edición independiente
-                object.traverse((child) => {
-                    if (child instanceof THREE.Mesh) {
-                        child.material = child.material.clone();
-                        console.log(`Parte cargada: ${child.name}`);
-                    }
-                });
+// Modelo
+let object = null, selectedPart = null;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+const mtlLoader = new THREE.MTLLoader();
+mtlLoader.load('path/to/material.mtl', (materials) => {
+    materials.preload();
+    const objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.load('path/to/model.obj', (obj) => {
+        object = obj;
+        scene.add(object);
+    });
+});
+
+// Selección con Raycaster
+renderer.domElement.addEventListener('click', (event) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(object.children, true);
+
+    if (intersects.length > 0) {
+        const selectedMesh = intersects[0].object;
+        selectedPart = selectedMesh.name;
+        console.log(`Parte seleccionada: ${selectedPart}`);
+    }
+});
+
+// Herramientas de Textura
+const textureLoader = new THREE.TextureLoader();
+document.getElementById('image-input').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file && selectedPart) {
+        const fileURL = URL.createObjectURL(file);
+        textureLoader.load(fileURL, (texture) => {
+            object.traverse((child) => {
+                if (child instanceof THREE.Mesh && child.name === selectedPart) {
+                    child.material.map = texture;
+                    child.material.needsUpdate = true;
+                }
             });
         });
+    }
+});
 
-        // Función de selección con Raycaster
-        function onCanvasClick(event) {
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+// Exportar Modelo
+document.getElementById('export-model').addEventListener('click', () => {
+    console.log('Función para exportar el modelo como GLTF aquí.');
+});
 
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(object.children, true);
+// Animación
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
 
-            if (intersects.length > 0) {
-                const selectedMesh = intersects[0].object;
-
-                // Resaltar la parte seleccionada
-                object.traverse((child) => {
-                    if (child instanceof THREE.Mesh) {
-                        child.material.emissive.set(0x000000); // Apagar resaltado
-                    }
-                });
-                selectedMesh.material.emissive.set(0x555555); // Resaltar seleccionado
-
-                selectedPart = selectedMesh.name;
-                document.getElementById('selected-part').textContent = selectedPart;
-                console.log(`Parte seleccionada: ${selectedPart}`);
-            }
-        }
-
-        renderer.domElement.addEventListener('click', onCanvasClick);
-
-        // Aplicar textura
-        document.getElementById('image-input').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file && selectedPart) {
-                const textureLoader = new THREE.TextureLoader();
-                const fileURL = URL.createObjectURL(file);
-                textureLoader.load(fileURL, (texture) => {
-                    object.traverse((child) => {
-                        if (child instanceof THREE.Mesh && child.name === selectedPart) {
-                            child.material.map = texture;
-                            child.material.needsUpdate = true;
-                        }
-                    });
-                    URL.revokeObjectURL(fileURL);
-                });
-            }
-        });
-
-        // Restablecer texturas
-        document.getElementById('reset-button').addEventListener('click', () => {
-            if (object) {
-                object.traverse((child) => {
-                    if (child instanceof THREE.Mesh) {
-                        child.material.map = null;
-                        child.material.needsUpdate = true;
-                    }
-                });
-            }
-        });
-
-        // Animación
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-    </script>
 </body>
 </html>
+
+
 
