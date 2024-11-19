@@ -3,458 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Producto 3D</title>
+    <title>Editor 3D</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
             background-color: #f7f7f7;
         }
+
         .container {
             display: flex;
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px auto;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            height: 100vh;
         }
-        .image-section {
-            flex: 1;
-            padding: 35px;
-            border-right: 1px solid #ddd;
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: #1e1e1e;
+            color: white;
             display: flex;
-            flex-direction: column; /* Cambiado para alinear en columna */
-            justify-content: left;
-            align-items: left;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #00bcd4;
+        }
+
+        .sidebar label {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .sidebar input, .sidebar select, .sidebar button {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .sidebar input, .sidebar select {
+            background-color: #2e2e2e;
+            color: white;
+        }
+
+        .sidebar button {
+            background-color: #00bcd4;
+            color: black;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover {
+            background-color: #007bff;
+        }
+
+        /* Main Viewer */
+        .viewer {
+            flex: 1;
+            position: relative;
+            background-color: #fff;
         }
 
         #product-viewer {
-
-          background-color: #fff;
-          transition: width 0.3s ease, height 0.3s ease;
-        }
-        #small-canvas {
-
-        background-color: #f0f0f0;
-        cursor: pointer;
-        transition: width 0.3s ease, height 0.3s ease;
-        }
-
-
-
-        /* Contenedor para canvas2D y botón */
-        #canvas-container {
-            width: 100px;
-            height: 100px;
-            background-color: #f0f0f0;
-            cursor: pointer;
-            position: relative;
-        }
-        
-.overlay-button {
-    display: none;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 5px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-#canvas-container:hover .overlay-button {
-    display: block;
-}
-                /* Clases para intercambiar tamaños */
-        .large {
-            width: 500px !important;
-            height: 500px !important;
-        }
-
-        .small {
-            width: 100px !important;
-            height: 100px !important;
-        }
-        #viewer-container {
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-        }
-        
-        #image-uploader {
-          text-align: center;
-          margin-top: 20px;
-        }
-
-        .description-section {
-            flex: 1;
-            padding: 20px;
-        }
-        .description-section h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .price {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .options {
-            margin-bottom: 15px;
-        }
-        .options label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .options select, .quantity-selector input {
-            padding: 10px;
             width: 100%;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            height: 100%;
         }
-        .quantity-selector {
-            margin-bottom: 15px;
-        }
-
-        .add-to-cart {
-            background-color: #007bff;
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .add-to-cart:hover {
-            background-color: #0056b3;
-        }
-        .product-description {
-            margin-top: 20px;
-        }
-        .reviews {
-            margin-top: 20px;
-        }
-        .reviews .stars {
-            color: #ffc107;
-        }
-        .recommended-products {
-            margin-top: 20px;
-        }
-        .recommended-products h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .section {
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        /* Clase para mover canvas3D a la derecha */
-        .moved {
-        left: 150px; /* Ajusta según lo necesario */
-        }
-        
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="image-section">
-        <div id="product-viewer" style="width: 500px; height: 500px"></div> <!-- El visor 3D se carga aquí -->
-        </div>
-    
-<div id="canvas-container">
-    <canvas id="small-canvas"></canvas>
-    <div class="overlay-button" id="canvas2d-button">Click aquí</div>
-</div>
-
-    
-
-    <div class="description-section">
-        <h1>Nombre del Producto</h1>
-        <p class="price">$99.99</p>
-        <div class="options">
-            <label for="size">Tamaño</label>
-            <select id="size">
-                <option>Pequeño</option>
-                <option>Mediano</option>
-                <option>Grande</option>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Personalización 3D</h2>
+            <label for="part-select">Parte seleccionada</label>
+            <select id="part-select">
+                <option value="" disabled selected>Seleccione una parte...</option>
             </select>
-        </div>
-        <div class="options">
-            <label for="color">Color</label>
-            <select id="color">
-                <option>Rojo</option>
-                <option>Azul</option>
-                <option>Negro</option>
-            </select>
-        </div>
-        <div class="quantity-selector">
-            <label for="quantity">Cantidad</label>
-            <input type="number" id="quantity" min="1" value="1">
-        </div>
-        <div class="add-to-cart">Añadir al Carrito</div>
 
-        <!-- Input para subir la imagen -->
-        <div id="image-uploader">
-            <label for="image-input">Selecciona una imagen para aplicar como textura:</label>
+            <label for="image-input">Cargar textura</label>
             <input type="file" id="image-input" accept="image/*">
+
+            <button id="reset-button">Restablecer Texturas</button>
         </div>
 
-        <div class="section">
-            <label for="part-select">Parte seleccionada:</label>
-                <input type="text" id="part-select" readonly>
-        </div>
-
-        <div class="reviews">
-            <h2>Reseñas de Clientes</h2>
-            <p class="stars">★★★★☆</p>
-            <p>"Muy buen producto, excelente calidad y precio razonable." - Cliente Satisfecho</p>
-        </div>
-
-        <div class="recommended-products">
-            <h2>Productos Recomendados</h2>
-            <ul>
-                <li>Producto 1</li>
-                <li>Producto 2</li>
-                <li>Producto 3</li>
-            </ul>
+        <!-- 3D Viewer -->
+        <div class="viewer">
+            <div id="product-viewer"></div>
         </div>
     </div>
-</div>
 
-<!-- Three.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+    <script>
+        // Escena, cámara y renderer
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf7f7f7);
 
-<!-- OrbitControls -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 5, 20);
 
-<!-- OBJ and MTL Loaders -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth - 300, window.innerHeight);
+        document.getElementById('product-viewer').appendChild(renderer.domElement);
 
-<script>
-    var scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf7f7f7);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 20);
-    camera.lookAt(scene.position);
+        // Luces
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0xf7f7f7);
-    var container = document.getElementById('product-viewer');
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(1, 1, 1).normalize();
+        scene.add(directionalLight);
 
-    var ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
+        // Variables globales
+        let object = null;
+        let selectedPart = null;
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(1, 1, 1).normalize();
-    scene.add(directionalLight);
+        // Cargar modelo OBJ y MTL
+        const mtlLoader = new THREE.MTLLoader();
+        mtlLoader.load('Version obj con partes discriminadas3.mtl', (materials) => {
+            materials.preload();
+            const objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load('Version obj con partes discriminadas3.obj', (loadedObject) => {
+                object = loadedObject;
+                object.position.set(0, 0, 0);
+                object.scale.set(0.3, 0.3, 0.3);
+                scene.add(object);
 
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.update();
+                // Clonar materiales para edición independiente
+                object.traverse((child) => {
+                    if (child instanceof THREE.Mesh) {
+                        child.material = child.material.clone();
+                        console.log(`Parte cargada: ${child.name}`);
+                    }
+                });
 
-    // Crear un Raycaster y un Vector para almacenar la posición del mouse
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+                // Llenar el selector de partes
+                actualizarSelectorDePartes(object);
+            });
+        });
 
-// Función para manejar el clic en el canvas y seleccionar partes
-function onCanvasClick(event) {
-    const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        // Actualizar selector de partes
+        function actualizarSelectorDePartes(obj) {
+            const partSelect = document.getElementById('part-select');
+            obj.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    const option = document.createElement('option');
+                    option.value = child.name;
+                    option.textContent = child.name;
+                    partSelect.appendChild(option);
+                }
+            });
+        }
 
-    raycaster.setFromCamera(mouse, camera);
+        // Manejo de selección de partes
+        document.getElementById('part-select').addEventListener('change', function () {
+            selectedPart = this.value;
+            console.log(`Parte seleccionada: ${selectedPart}`);
+        });
 
-    const intersects = raycaster.intersectObjects(object.children, true);
+        // Aplicar textura a la parte seleccionada
+        function applyTexture(texture) {
+            if (!object || !selectedPart) return;
+            object.traverse((child) => {
+                if (child instanceof THREE.Mesh && child.name === selectedPart) {
+                    child.material.map = texture;
+                    child.material.needsUpdate = true;
+                }
+            });
+        }
 
-    if (intersects.length > 0) {
-        const selectedMesh = intersects[0].object;
-        console.log("Parte seleccionada:", selectedMesh.name);
-
-        // Resetear la emisión en todas las partes antes de resaltar la seleccionada
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.emissive.set(0x000000); // Apagar resaltado
+        // Cargar textura desde archivo
+        document.getElementById('image-input').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const textureLoader = new THREE.TextureLoader();
+                const fileURL = URL.createObjectURL(file);
+                textureLoader.load(fileURL, (texture) => {
+                    applyTexture(texture);
+                    URL.revokeObjectURL(fileURL);
+                });
             }
         });
 
-        // Aplicar resaltado solo a la parte seleccionada
-        selectedMesh.material.emissive.set(0x555555); // Resaltar solo la parte seleccionada
-
-
-    // Agrega un console.log antes de la actualización
-    console.log("Antes de actualizar:", document.getElementById("part-select"));
-
-// Asegúrate de que selectedPart tenga un valor válido antes de actualizar el campo de texto
-selectedPart = selectedMesh.name; // Asigna el nombre de la parte seleccionada
-
-// Actualizar el campo de texto con el nombre de la parte seleccionada
-const partSelect = document.getElementById('part-select');
-if (partSelect && selectedPart) {
-    partSelect.value = selectedPart;
-    console.log("Actualización del campo de texto:", partSelect.value);
-} else {
-    console.warn("Elemento 'part-select' no encontrado en el DOM o 'selectedPart' no está definido");
-}
-
-}
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-    renderer.domElement.addEventListener('click', onCanvasClick);
-});
-
-
-
-// Agregar el evento de clic al canvas
-renderer.domElement.addEventListener('click', onCanvasClick);
-
-
-
-
-    
-
-// Declaración global para el objeto y la parte seleccionada
-var object = null;
-var selectedPart = null;
-
-// Cargar el archivo MTL y OBJ
-var mtlLoader = new THREE.MTLLoader();
-mtlLoader.load('Version obj con partes discriminadas3.mtl', function (materials) {
-    materials.preload();
-    var objLoader = new THREE.OBJLoader();
-    objLoader.setMaterials(materials);
-    objLoader.load('Version obj con partes discriminadas3.obj', function (loadedObject) {
-        object = loadedObject;
-        object.position.set(0, 0, 0);
-        object.scale.set(0.3, 0.3, 0.3);
-        scene.add(object);
-
-    // Clonar el material de cada parte para que sean independientes
-    object.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-            child.material = child.material.clone();  // Clonar material
-            console.log("Parte cargada:", child.name); // Comprobación en consola
-        }
-    });
-    
-    // Llenar el selector de partes
-    actualizarSelectorDePartes(object);
-  });
-});
-
-// Función para llenar el selector de partes automáticamente
-function actualizarSelectorDePartes(objeto) {
-    const partSelect = document.getElementById('part-select');
-    objeto.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-            const option = document.createElement('option');
-            option.value = child.name;
-            option.textContent = child.name;
-            partSelect.appendChild(option);
-        }
-    });
-}
-
-// Evento para seleccionar la parte
-document.getElementById('part-select').addEventListener('change', function () {
-    selectedPart = this.value;
-    console.log(`Parte seleccionada: ${selectedPart}`);
-});
-
-// Función para aplicar textura solo cuando el objeto y la parte seleccionada están definidos
-function applyTextureToSelectedPart(texture) {
-    if (!object || !selectedPart) {
-        console.warn("No se puede aplicar la textura. Asegúrate de que el objeto y la parte seleccionada estén definidos.");
-        return;
-    }
-
-    object.traverse(function (child) {
-        if (child instanceof THREE.Mesh && child.name === selectedPart) {
-            child.material.map = texture;
-            child.material.needsUpdate = true;
-            console.log(`Textura aplicada a ${selectedPart}`);
-        }
-    });
-}
-
-// Cargar la imagen y aplicar textura a la parte seleccionada
-document.getElementById('image-input').addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    if (file) {
-        const textureLoader = new THREE.TextureLoader();
-        const fileURL = URL.createObjectURL(file);
-        textureLoader.load(fileURL, function (texture) {
-            applyTextureToSelectedPart(texture);
-            URL.revokeObjectURL(fileURL); // Liberar memoria
-        });
-    }
-});
-
-// Función de animación
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-}
-animate();
-
-   const canvas3D = document.getElementById('product-viewer');
-    const canvas2D = document.getElementById('small-canvas');
-
-    // Función para alternar la posición
-    function toggleCanvasPosition() {
-        if (canvas3D.classList.contains('moved')) {
-            // Remueve el desplazamiento si está aplicado
-            canvas3D.classList.remove('moved');
-            canvas2D.style.width = '100px';
-            canvas2D.style.height = '100px';
-        } else {
-            // Mueve el canvas3D y expande el canvas2D
-            canvas3D.classList.add('moved');
-            canvas2D.style.width = '500px';
-            canvas2D.style.height = '500px';
-        }
-    }
-
- document.addEventListener('DOMContentLoaded', function() {
-        const canvas2D = document.getElementById('small-canvas');
-        const button = document.getElementById('canvas2d-button');
-
-        // Mostrar el botón al pasar el mouse sobre el canvas2D
-        canvas2D.addEventListener('mouseenter', () => {
-            button.style.display = 'block';
+        // Restablecer texturas
+        document.getElementById('reset-button').addEventListener('click', () => {
+            if (object) {
+                object.traverse((child) => {
+                    if (child instanceof THREE.Mesh) {
+                        child.material.map = null;
+                        child.material.needsUpdate = true;
+                    }
+                });
+            }
         });
 
-        // Ocultar el botón al salir del canvas2D
-        canvas2D.addEventListener('mouseleave', () => {
-            button.style.display = 'none';
-        });
-
-        // Acción del botón
-        button.addEventListener('click', () => {
-            alert('¡Botón en canvas2D presionado!');
-        });
-    });
-
-
-    
-</script>
-
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
 </body>
 </html>
 
-
-
-    
-</script>
-
-</body>
-</html>
